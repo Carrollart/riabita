@@ -20,4 +20,10 @@ __pycache__/
 
 # Environment files
 .env
+.streamlit/secrets.toml
+
+# Project
+.pytest_cache/
+.data/
+*.local.geojson
 

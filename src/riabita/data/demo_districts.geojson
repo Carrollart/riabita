@@ -1,0 +1,67 @@
+{
+  "type": "FeatureCollection",
+  "name": "riabita-demo-districts",
+  "description": "Illustrative demo data. Indicators and geometries are simplified placeholders, not authoritative RIz research output.",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "centro",
+      "properties": { "nome": "Centro", "M0": 70, "C0": 90, "T0": 100, "S0": 25, "demo": true },
+      "geometry": { "type": "Polygon", "coordinates": [[[12.47, 41.89], [12.49, 41.89], [12.49, 41.91], [12.47, 41.91], [12.47, 41.89]]] }
+    },
+    {
+      "type": "Feature",
+      "id": "san-lorenzo",
+      "properties": { "nome": "San Lorenzo", "M0": 55, "C0": 40, "T0": 80, "S0": 35, "demo": true },
+      "geometry": { "type": "Polygon", "coordinates": [[[12.51, 41.89], [12.52, 41.89], [12.52, 41.90], [12.51, 41.90], [12.51, 41.89]]] }
+    },
+    {
+      "type": "Feature",
+      "id": "trastevere",
+      "properties": { "nome": "Trastevere", "M0": 40, "C0": 85, "T0": 95, "S0": 30, "demo": true },
+      "geometry": { "type": "Polygon", "coordinates": [[[12.46, 41.88], [12.47, 41.88], [12.47, 41.89], [12.46, 41.89], [12.46, 41.88]]] }
+    },
+    {
+      "type": "Feature",
+      "id": "montesacro",
+      "properties": { "nome": "Montesacro", "M0": 45, "C0": 50, "T0": 20, "S0": 65, "demo": true },
+      "geometry": { "type": "Polygon", "coordinates": [[[12.53, 41.93], [12.55, 41.93], [12.55, 41.95], [12.53, 41.95], [12.53, 41.93]]] }
+    },
+    {
+      "type": "Feature",
+      "id": "trieste-parioli",
+      "properties": { "nome": "Trieste-Parioli", "M0": 60, "C0": 70, "T0": 40, "S0": 75, "demo": true },
+      "geometry": { "type": "Polygon", "coordinates": [[[12.48, 41.92], [12.50, 41.92], [12.50, 41.94], [12.48, 41.94], [12.48, 41.92]]] }
+    },
+    {
+      "type": "Feature",
+      "id": "eur",
+      "properties": { "nome": "EUR", "M0": 75, "C0": 50, "T0": 30, "S0": 60, "demo": true },
+      "geometry": { "type": "Polygon", "coordinates": [[[12.46, 41.82], [12.48, 41.82], [12.48, 41.84], [12.46, 41.84], [12.46, 41.82]]] }
+    },
+    {
+      "type": "Feature",
+      "id": "ostia",
+      "properties": { "nome": "Ostia", "M0": 40, "C0": 35, "T0": 85, "S0": 50, "demo": true },
+      "geometry": { "type": "Polygon", "coordinates": [[[12.26, 41.72], [12.29, 41.72], [12.29, 41.74], [12.26, 41.74], [12.26, 41.72]]] }
+    },
+    {
+      "type": "Feature",
+      "id": "tuscolano",
+      "properties": { "nome": "Tuscolano", "M0": 65, "C0": 45, "T0": 30, "S0": 55, "demo": true },
+      "geometry": { "type": "Polygon", "coordinates": [[[12.52, 41.86], [12.54, 41.86], [12.54, 41.88], [12.52, 41.88], [12.52, 41.86]]] }
+    },
+    {
+      "type": "Feature",
+      "id": "magliana",
+      "properties": { "nome": "Magliana", "M0": 40, "C0": 30, "T0": 10, "S0": 45, "demo": true },
+      "geometry": { "type": "Polygon", "coordinates": [[[12.44, 41.83], [12.46, 41.83], [12.46, 41.85], [12.44, 41.85], [12.44, 41.83]]] }
+    },
+    {
+      "type": "Feature",
+      "id": "nomentano",
+      "properties": { "nome": "Nomentano", "M0": 60, "C0": 55, "T0": 25, "S0": 65, "demo": true },
+      "geometry": { "type": "Polygon", "coordinates": [[[12.50, 41.91], [12.52, 41.91], [12.52, 41.93], [12.50, 41.93], [12.50, 41.91]]] }
+    }
+  ]
+}
