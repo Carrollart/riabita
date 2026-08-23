@@ -8,6 +8,7 @@ import pytest
 from streamlit.testing.v1 import AppTest
 
 from riabita import config, i18n
+from riabita.domain.models import Allocation
 from riabita.ui import charts, state
 
 APP = str(Path(__file__).resolve().parents[1] / "src" / "main.py")
@@ -78,6 +79,22 @@ def run_app(timeout: float = 30) -> AppTest:
     return app.run()
 
 
+def sidebar_button(app: AppTest, label: str):
+    return next(button for button in app.sidebar.button if button.label == label)
+
+
+def set_turn_allocation(app: AppTest, values: tuple[int, int, int, int]) -> AppTest:
+    for index, value in enumerate(values):
+        if app.sidebar.slider[index].value != value:
+            app.sidebar.slider[index].set_value(value).run()
+    return app
+
+
+def commit_turn(app: AppTest) -> AppTest:
+    sidebar_button(app, i18n.t("sidebar.simulate", "it")).click().run()
+    return app
+
+
 def test_app_starts_with_demo_data_and_local_database() -> None:
     app = run_app()
     assert not app.exception
@@ -89,28 +106,36 @@ def test_demo_notice_is_shown() -> None:
     assert any(i18n.t("data.demo_notice", "it") in info.value for info in app.info)
 
 
-def test_simulate_is_disabled_until_the_budget_is_exact() -> None:
+def test_turn_is_disabled_until_at_least_one_credit_is_allocated() -> None:
     app = run_app()
-    app.sidebar.slider[0].set_value(50).run()
-    simulate = app.sidebar.button[-1]
-    assert simulate.disabled is True
+    confirm = sidebar_button(app, i18n.t("sidebar.simulate", "it"))
+    assert confirm.disabled is True
 
 
-def test_simulate_is_enabled_for_an_exact_budget() -> None:
+def test_partial_turn_is_enabled_without_spending_all_credits() -> None:
     app = run_app()
-    assert app.sidebar.button[-1].disabled is False
+    app.sidebar.slider[0].set_value(40).run()
+    confirm = sidebar_button(app, i18n.t("sidebar.simulate", "it"))
+    assert confirm.disabled is False
 
 
-def test_running_a_round_produces_results() -> None:
+def test_partial_turn_produces_results_and_preserves_remaining_credits() -> None:
     app = run_app()
-    app.sidebar.button[-1].click().run()
+    set_turn_allocation(app, (40, 0, 0, 0))
+    commit_turn(app)
+
     assert not app.exception
     assert any(i18n.t("results.header", "it") in h.value for h in app.header)
+    current = app.session_state[state.KEY_ROUND]
+    assert current.turn_count == 1
+    assert current.remaining_credits == 60
+    assert current.player.allocation == Allocation(40, 0, 0, 0)
 
 
 def test_all_three_strategies_share_one_event() -> None:
     app = run_app()
-    app.sidebar.button[-1].click().run()
+    set_turn_allocation(app, (20, 10, 0, 0))
+    commit_turn(app)
     current = app.session_state[state.KEY_ROUND]
     assert current is not None
     event_ids = {
@@ -122,20 +147,39 @@ def test_all_three_strategies_share_one_event() -> None:
     assert current.event is not None
 
 
-def test_benchmarks_allocate_without_seeing_the_event() -> None:
-    """The AI allocation depends only on the baseline, never on the draw."""
+def test_benchmarks_receive_the_same_number_of_credits_each_turn() -> None:
     app = run_app()
-    allocations = set()
-    for _ in range(3):
-        app.sidebar.button[-1].click().run()
-        current = app.session_state[state.KEY_ROUND]
-        allocations.add(current.ai_allocation)
-    assert len(allocations) == 1
+    set_turn_allocation(app, (12, 8, 0, 0))
+    commit_turn(app)
+    turn = app.session_state[state.KEY_ROUND].turns[0]
+    assert turn.player_allocation.total == 20
+    assert turn.ai_allocation.total == 20
+    assert turn.random_allocation.total == 20
+
+
+def test_multiple_turns_accumulate_until_the_budget_is_exhausted() -> None:
+    app = run_app()
+    set_turn_allocation(app, (40, 0, 0, 0))
+    commit_turn(app)
+    first = app.session_state[state.KEY_ROUND]
+
+    set_turn_allocation(app, (0, 60, 0, 0))
+    commit_turn(app)
+    completed = app.session_state[state.KEY_ROUND]
+
+    assert first.remaining_credits == 60
+    assert completed.remaining_credits == 0
+    assert completed.is_complete
+    assert completed.turn_count == 2
+    assert completed.player.allocation == Allocation(40, 60, 0, 0)
+    assert completed.round_id == first.round_id
+    assert not app.sidebar.slider
 
 
 def test_rerender_does_not_change_the_event_or_scores() -> None:
     app = run_app()
-    app.sidebar.button[-1].click().run()
+    set_turn_allocation(app, (30, 0, 0, 0))
+    commit_turn(app)
     before = app.session_state[state.KEY_ROUND]
     app.run()
     after = app.session_state[state.KEY_ROUND]
@@ -152,7 +196,8 @@ def test_player_id_is_stable_and_never_an_input() -> None:
 
 def test_leaderboard_is_enabled_with_local_sqlite() -> None:
     app = run_app()
-    app.sidebar.button[-1].click().run()
+    set_turn_allocation(app, (100, 0, 0, 0))
+    commit_turn(app)
     assert not any(
         i18n.t("leaderboard.unavailable", "it") in info.value for info in app.info
     )
@@ -163,34 +208,54 @@ def test_leaderboard_is_enabled_with_local_sqlite() -> None:
     assert app.text_input
 
 
+def test_leaderboard_submission_is_locked_while_credits_remain() -> None:
+    app = run_app()
+    set_turn_allocation(app, (50, 0, 0, 0))
+    commit_turn(app)
+    assert not app.text_input
+    assert any(
+        i18n.t("leaderboard.complete_budget", "it") in info.value
+        for info in app.info
+    )
+
+
 def test_language_switch_translates_the_interface() -> None:
     app = run_app()
     app.sidebar.selectbox[0].set_value("en").run()
     assert not app.exception
-    assert any("Simulate investments" in b.label for b in app.sidebar.button)
+    assert any("Confirm investment" in b.label for b in app.sidebar.button)
 
 
 def test_language_switch_preserves_the_round() -> None:
     app = run_app()
-    app.sidebar.button[-1].click().run()
+    set_turn_allocation(app, (25, 0, 0, 0))
+    commit_turn(app)
     before = app.session_state[state.KEY_ROUND]
     app.sidebar.selectbox[0].set_value("en").run()
     assert app.session_state[state.KEY_ROUND] == before
     assert not app.exception
 
 
-def test_reset_restores_the_even_split() -> None:
+def test_clear_turn_restores_zero_allocations() -> None:
     app = run_app()
     app.sidebar.slider[0].set_value(70).run()
     reset = next(b for b in app.sidebar.button if b.label == i18n.t("sidebar.reset", "it"))
     reset.click().run()
-    assert app.sidebar.slider[0].value == config.BUDGET_TOTAL // 4
+    assert all(slider.value == 0 for slider in app.sidebar.slider)
 
 
-def test_concentration_warning_appears_above_the_limit() -> None:
+def test_restart_restores_the_full_budget() -> None:
     app = run_app()
-    app.sidebar.slider[0].set_value(70).run()
-    app.sidebar.slider[1].set_value(10).run()
-    app.sidebar.slider[2].set_value(10).run()
-    app.sidebar.slider[3].set_value(10).run()
+    set_turn_allocation(app, (30, 0, 0, 0))
+    commit_turn(app)
+    sidebar_button(app, i18n.t("sidebar.restart", "it")).click().run()
+    assert app.session_state[state.KEY_ROUND] is None
+    assert all(slider.value == 0 for slider in app.sidebar.slider)
+
+
+def test_concentration_warning_uses_the_cumulative_allocation() -> None:
+    app = run_app()
+    set_turn_allocation(app, (50, 0, 0, 0))
+    commit_turn(app)
+    app.sidebar.slider[0].set_value(11).run()
     assert any("60" in w.value for w in app.sidebar.warning)

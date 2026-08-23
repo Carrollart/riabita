@@ -61,6 +61,27 @@ def test_sum_error_reports_signed_difference(
     assert issue.detail["difference"] == difference
 
 
+def test_partial_turn_allocation_is_valid() -> None:
+    assert validation.validate_turn_allocation([10, 5, 0, 0], 100) == ()
+
+
+def test_turn_allocation_must_invest_at_least_one_credit() -> None:
+    assert rules(validation.validate_turn_allocation([0, 0, 0, 0], 100)) == {
+        validation.RULE_ALLOCATION_EMPTY
+    }
+
+
+def test_turn_allocation_cannot_exceed_remaining_credits() -> None:
+    issues = validation.validate_turn_allocation([20, 10, 0, 0], 25)
+    assert rules(issues) == {validation.RULE_ALLOCATION_EXCEEDS_REMAINING}
+    assert issues[0].detail["difference"] == 5.0
+
+
+def test_cumulative_allocation_accepts_zero_and_partial_totals() -> None:
+    assert validation.validate_cumulative_allocation([0, 0, 0, 0]) == ()
+    assert validation.validate_cumulative_allocation([20, 10, 0, 0]) == ()
+
+
 @pytest.mark.parametrize("values", [[50, 50, 101, -50], [0, 0, 0, 0]])
 def test_invalid_allocations_report_at_least_one_rule(values: list[int]) -> None:
     assert validation.validate_allocation(values)
@@ -99,3 +120,9 @@ def test_allocation_summary_properties() -> None:
     assert allocation.total == 100
     assert allocation.largest == 60
     assert allocation.funded_count == 2
+
+
+def test_allocations_add_component_by_component() -> None:
+    assert Allocation(10, 0, 5, 0).plus(Allocation(0, 20, 0, 5)) == Allocation(
+        10, 20, 5, 5
+    )

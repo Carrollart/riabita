@@ -16,14 +16,18 @@ index 2 = T  Tourism
 index 3 = S  Socio-demographic
 ```
 
-Two vectors participate in a round:
+Three allocation vectors participate in a progressive round:
 
 - **Dimension vector** `d = (M, C, T, S)`, each value in `0..100`.
-- **Allocation vector** `b = (B_M, B_C, B_T, B_S)`, integer credits summing to `100`.
+- **Turn allocation vector** `b = (B_M, B_C, B_T, B_S)`, integer credits whose
+  positive sum does not exceed the remaining game budget.
+- **Cumulative allocation vector** `B`, the component-wise sum of completed turn
+  allocations. Its sum starts at `0` and reaches exactly `100` when the round is
+  complete.
 
 ## Rules version
 
-Expose `RULES_VERSION = "1.0.0"`. Store it with every leaderboard entry (REQ-081).
+Expose `RULES_VERSION = "2.0.0"`. Store it with every leaderboard entry (REQ-081).
 Increment the minor version when any constant below changes, and the major version
 when the operation order changes.
 
@@ -31,8 +35,10 @@ when the operation order changes.
 
 Fixed and non-negotiable. Each step consumes the output of the previous one.
 
-1. **Validate** allocations. Reject invalid input before any arithmetic.
-2. **Apply the impact matrix** atomically to the baseline dimensions.
+1. **Validate** the turn allocation against the remaining credits. Reject invalid
+   input before any arithmetic.
+2. **Apply the impact matrix** atomically to the dimensions produced by the previous
+   turn, or to the district baseline in turn 1.
 3. **Apply tourism pressure** to `S`, based on post-matrix `T`.
 4. **Apply the event** impact vector.
 5. **Clamp** dimensions to `0..100`.
@@ -53,14 +59,17 @@ Reject the round and report a stable error identifier when any rule fails.
 | Exactly four allocations are supplied | `allocation_length` |
 | Every allocation is an integer | `allocation_not_integer` |
 | Every allocation is within `0..100` | `allocation_out_of_range` |
-| The allocations sum to exactly `100` | `allocation_sum` |
+| A complete single-turn allocation used by `run_simulation` sums to exactly `100` | `allocation_sum` |
+| A progressive turn allocates at least one credit | `allocation_empty` |
+| A progressive turn total is no greater than the remaining credits | `allocation_exceeds_remaining` |
 | Exactly four baseline dimensions are supplied, each within `0..100` | `dimension_out_of_range` |
 
 Validation is a pure function returning the failed identifiers. The engine raises on
 failure; the UI calls the same function to render a localized message (REQ-024).
 
-`allocation_sum` carries the signed difference `sum - 100` so the UI can tell the
-player exactly how many credits to add or remove.
+`allocation_sum` carries the signed difference `sum - 100` for the complete
+single-turn engine contract. `allocation_exceeds_remaining` carries
+`sum - remaining` so the UI can tell the player how many credits to remove.
 
 ## Step 2: Impact matrix
 
@@ -74,9 +83,10 @@ area; columns are the affected dimension.
 | Tourism | +0.2 | +0.3 | +1.0 | 0.0 |
 | Socio-demographic | +0.2 | +0.3 | −0.1 | +1.0 |
 
-Compute the whole delta vector from the **baseline** values, then add it:
+Compute the whole delta vector before changing any dimension, then add it to the
+dimensions at the start of the turn:
 
-$$\Delta_j = \sum_{i=0}^{3} \frac{b_i}{10} \cdot \text{Matrix}[i][j] \qquad d^{(2)} = d^{(0)} + \Delta$$
+$$\Delta_j = \sum_{i=0}^{3} \frac{b_i}{10} \cdot \text{Matrix}[i][j] \qquad d^{(2)} = d^{(\text{turn start})} + \Delta$$
 
 Equivalently, `delta = (b / 10) @ MATRIX` with `MATRIX` in the row/column layout above.
 
@@ -106,7 +116,7 @@ step 6.
 
 ## Step 4: Event
 
-Exactly one event applies per round. Add its impact vector to the dimensions:
+Exactly one event applies per turn. Add its impact vector to the dimensions:
 
 $$d^{(4)} = d^{(3)} + \text{impact}$$
 
@@ -135,7 +145,8 @@ All later steps use the clamped values.
 
 ## Step 6: Modifiers
 
-Compute each modifier independently and return it as an itemized record carrying its
+Compute each modifier independently from the current dimensions and the
+**cumulative allocation** `B`. Return it as an itemized record carrying its
 identifier, its signed point value, and the data that triggered it (REQ-035, REQ-058).
 Modifiers do not short-circuit one another; the total is their sum.
 
@@ -193,9 +204,10 @@ $$\text{RIz}_{\text{base}} = \sum_j w_j \cdot d^{(5)}_j$$
 
 $$\text{RIz}_{\text{final}} = \min\left(100,\ \max\left(0,\ \text{RIz}_{\text{base}} + \sum \text{modifiers}\right)\right)$$
 
-The **initial RIz** is the weighted sum of the baseline dimensions with **no**
-modifiers, clamped to `0..100`. Modifiers describe the outcome of a strategy, so
-applying them to the untouched baseline would misreport the starting position.
+The **initial RIz** is always the weighted sum of the original district baseline
+with **no** modifiers, clamped to `0..100`. The final RIz uses the dimensions after
+the latest turn and modifiers derived from the cumulative allocation. This makes
+yield cumulative across the round.
 
 ## Step 8: Metrics
 
@@ -234,25 +246,26 @@ The engine never calls `random` or `numpy.random` at import time or at module le
 It accepts a generator (for example `numpy.random.Generator` or `random.Random`)
 constructed by the caller.
 
-- A seeded run reproduces the same event, the same random benchmark allocation, and
+- A seeded turn reproduces the same event, the same random benchmark allocation, and
   the same scores (REQ-037).
-- Tests always pass an explicit seed.
-- The Streamlit layer creates one generator per round and stores the seed in session
-  state so a re-render does not silently redraw the event.
+- Tests pass an explicit seed where the draw itself is under test.
+- The Streamlit layer completes and stores a turn atomically, so a re-render does
+  not silently redraw its event.
 
 ## Benchmark strategy fairness
 
-Both benchmarks obey every rule in step 1, and neither receives the drawn event
-(REQ-054, REQ-055).
+Both benchmarks receive the same turn budget as the player, obey every rule in
+step 1, and allocate before the event is drawn (REQ-054, REQ-055).
 
 ### AI strategy
 
 Deterministic heuristic, computed from the baseline dimensions only:
 
-1. Start from an even split `[25, 25, 25, 25]`.
-2. **Overtourism guard.** If `T0 > S0 + 10`, move `10` credits from tourism to
-   socio-demographic.
-3. **Weakest-dimension lift.** Let `lo` be the index of the lowest baseline value and
+1. Split the turn budget as evenly as integers allow, assigning remainder credits
+   to the lowest indices first. A 100-credit turn starts at `[25, 25, 25, 25]`.
+2. **Overtourism guard.** If `T0 > S0 + 10`, move up to `10` available credits
+   from tourism to socio-demographic.
+3. **Weakest-dimension lift.** Let `lo` be the index of the lowest current value and
    `hi` the index of the highest. Break ties by lowest index. If `lo != hi`, move `5`
    credits from `hi` to `lo`, but skip the move if it would push the source below `0`
    or the target above `60`.
@@ -265,15 +278,16 @@ gives `[25, 25, 15, 35]` → lift moves 5 from `T` (highest, 80) to `S` (lowest,
 ### Random strategy
 
 Draw four weights from a Dirichlet distribution with concentration `1.0` using the
-injected generator, scale by `100`, then convert to integers with the
+injected generator, scale by the current turn budget, then convert to integers with the
 **largest-remainder method**:
 
 1. Take the floor of each scaled weight.
-2. Compute `remainder = 100 − sum(floors)`.
+2. Compute `remainder = turn_budget − sum(floors)`.
 3. Give one extra credit to each of the `remainder` indices with the largest
    fractional parts, breaking ties by lowest index.
 
-Naive rounding does not sum to 100 and would fail validation.
+Naive rounding does not reliably sum to the supplied turn budget and would fail
+validation.
 
 ## Precision and display
 
@@ -288,8 +302,8 @@ Naive rounding does not sum to 100 and would fail validation.
 Use this as a regression test. It exercises the matrix, tourism pressure, the gap
 penalty, diversification, and a negative yield.
 
-**Input** — district San Lorenzo `d⁰ = (55, 40, 80, 35)`, allocation
-`b = (25, 25, 25, 25)`, no event.
+**Input** — a single-turn round for district San Lorenzo
+`d⁰ = (55, 40, 80, 35)`, allocation `b = (25, 25, 25, 25)`, no event.
 
 | Step | Result |
 |---|---|

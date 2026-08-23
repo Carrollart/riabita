@@ -81,7 +81,7 @@ Define these in `domain/models.py` as frozen dataclasses with type annotations
 | Type | Fields |
 |---|---|
 | `Dimensions` | `mobility: float`, `culture: float`, `tourism: float`, `socio: float` |
-| `Allocation` | `mobility: int`, `culture: int`, `tourism: int`, `socio: int` |
+| `Allocation` | `mobility: int`, `culture: int`, `tourism: int`, `socio: int`; represents one turn or a cumulative allocation |
 | `District` | `district_id: str`, `name: str`, `baseline: Dimensions`, `geometry: object \| None`, `is_demo: bool` |
 | `Event` | `event_id: str`, `name_key: str`, `description_key: str`, `impact: Dimensions` |
 | `Modifier` | `modifier_id: str`, `points: float`, `reason_key: str`, `detail: dict[str, float]` |
@@ -96,10 +96,10 @@ the starting score (REQ-059).
 | Field | Meaning |
 |---|---|
 | `district_id: str` | District that was played |
-| `allocation: Allocation` | Validated allocation |
-| `initial: Dimensions` | Baseline values |
-| `final: Dimensions` | Clamped post-event values |
-| `event: Event \| None` | Drawn event |
+| `allocation: Allocation` | Cumulative validated allocation through the latest turn |
+| `initial: Dimensions` | Original district baseline values |
+| `final: Dimensions` | Clamped values after the latest turn and event |
+| `event: Event \| None` | Event drawn for the latest turn |
 | `modifiers: tuple[Modifier, ...]` | Every modifier, including zero-point ones |
 | `riz_initial: float`, `riz_final: float` | Scores |
 | `urban_yield: float`, `risk: float`, `sharpe: float` | Metrics |
@@ -118,6 +118,14 @@ def run_simulation(
     allocation: Allocation,
     event: Event | None = None,
 ) -> SimulationResult: ...
+
+def run_turn(
+    district: District,
+    current: Dimensions,
+    cumulative_allocation: Allocation,
+    turn_allocation: Allocation,
+    event: Event | None = None,
+) -> SimulationResult: ...
 ```
 
 The engine does not draw the event. The caller draws it and passes it in, which keeps
@@ -127,19 +135,22 @@ site. Raise a `ValidationError` carrying the failed identifiers from
 
 ## Round orchestration
 
-`ui/state.py` owns the round lifecycle and guarantees the fairness rules:
+`ui/state.py` owns the progressive round lifecycle and guarantees the fairness rules:
 
-1. Derive a round seed and store it in session state. Re-renders reuse it, so the
-   event never silently changes.
-2. Build one generator from that seed.
-3. Draw one event.
-4. Build the AI and random allocations **before** the event is passed to anything,
-   so no strategy can observe it (REQ-054).
-5. Run `run_simulation` three times with the same district and the same event.
-6. Store the three results in session state.
+1. Validate that the player's non-empty turn allocation fits the remaining budget.
+2. Build one generator for the turn.
+3. Build AI and random allocations for the same number of credits from their current
+   dimensions, before drawing the event (REQ-054).
+4. Draw one event shared by all three strategies.
+5. Run `run_turn` three times from each strategy's prior dimensions and cumulative
+   allocation.
+6. Store the cumulative results and immutable turn history in session state.
+7. Enable leaderboard submission only when the cumulative player allocation totals
+   `100`.
 
 Only step 5 produces scores, which is what makes REQ-064 enforceable: the leaderboard
-service accepts a `SimulationResult` object, never loose numbers from the view.
+service accepts a cumulative `SimulationResult` object, never loose numbers from the
+view.
 
 ## Configuration
 

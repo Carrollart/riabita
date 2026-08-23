@@ -18,7 +18,12 @@ from riabita.domain.models import (
     Event,
     SimulationResult,
 )
-from riabita.domain.validation import validate_allocation, validate_dimensions
+from riabita.domain.validation import (
+    validate_allocation,
+    validate_cumulative_allocation,
+    validate_dimensions,
+    validate_turn_allocation,
+)
 from riabita.engine import metrics
 
 _TOURISM_INDEX = 2
@@ -71,6 +76,56 @@ def run_simulation(
     if event is not None:
         values = values + event.impact.as_array()
     final = Dimensions.from_array(clamp(values))
+
+    return _build_result(district, allocation, final, event)
+
+
+def run_turn(
+    district: District,
+    current: Dimensions,
+    cumulative_allocation: Allocation,
+    turn_allocation: Allocation,
+    event: Event | None = None,
+) -> SimulationResult:
+    """Apply and score one progressive investment turn.
+
+    The returned result is cumulative: its initial dimensions come from the
+    original district, while its final dimensions include every completed turn.
+    """
+    previous_budget = cumulative_allocation.as_array()
+    turn_budget = turn_allocation.as_array()
+    remaining = config.BUDGET_TOTAL - cumulative_allocation.total
+    issues = (
+        validate_dimensions(district.baseline.as_array().tolist())
+        + validate_dimensions(current.as_array().tolist())
+        + validate_cumulative_allocation(previous_budget.tolist())
+    )
+    if 0 <= remaining <= config.BUDGET_TOTAL:
+        issues += validate_turn_allocation(turn_budget.tolist(), remaining)
+    if issues:
+        raise ValidationError(issues)
+
+    values = apply_matrix(current.as_array(), turn_budget)
+    values = apply_tourism_pressure(values, turn_budget)
+    if event is not None:
+        values = values + event.impact.as_array()
+    final = Dimensions.from_array(clamp(values))
+
+    return _build_result(
+        district,
+        cumulative_allocation.plus(turn_allocation),
+        final,
+        event,
+    )
+
+
+def _build_result(
+    district: District,
+    allocation: Allocation,
+    final: Dimensions,
+    event: Event | None,
+) -> SimulationResult:
+    """Build cumulative metrics from original and current dimensions."""
 
     risk = metrics.population_std(final.as_array())
     modifiers = metrics.compute_modifiers(final, allocation, risk)

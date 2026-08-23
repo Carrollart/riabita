@@ -40,7 +40,7 @@ class Dimensions:
 
 @dataclass(frozen=True)
 class Allocation:
-    """Credits assigned to each dimension. Must total config.BUDGET_TOTAL."""
+    """Credits assigned to each dimension for a turn or cumulatively."""
 
     mobility: int
     culture: int
@@ -71,6 +71,15 @@ class Allocation:
             1
             for v in (self.mobility, self.culture, self.tourism, self.socio)
             if v > 0
+        )
+
+    def plus(self, other: "Allocation") -> "Allocation":
+        """Return the component-wise sum of two allocations."""
+        return Allocation(
+            mobility=self.mobility + other.mobility,
+            culture=self.culture + other.culture,
+            tourism=self.tourism + other.tourism,
+            socio=self.socio + other.socio,
         )
 
 

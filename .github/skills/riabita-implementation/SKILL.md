@@ -7,8 +7,9 @@ argument-hint: "Optional: phase number or module to implement (for example 'phas
 # RIABITA ROMA Implementation Guide
 
 Build RIABITA ROMA: a gamified urban simulation where a player allocates a fixed
-budget of 100 credits across four dimensions of a Rome district and maximizes the
-Riabitability Index (RIz) under penalties, bonuses, and a random event shock.
+budget of 100 credits over one or more progressive turns across four dimensions
+of a Rome district and maximizes the Riabitability Index (RIz) under penalties,
+bonuses, and random event shocks.
 
 ## When to Use
 
@@ -70,9 +71,9 @@ These cause silent, hard-to-detect bugs if violated.
   [simulation-rules.md](./references/simulation-rules.md).
 - **Randomness is injected**, never called at module level. The engine accepts a
   seeded generator so every simulation is reproducible in tests.
-- **One event per round, shared by all three strategies.** The player, AI, and
-  random benchmarks are scored against the same drawn event, and none of the
-  strategies may see the event before allocating.
+- **One event per turn, shared by all three strategies.** The player, AI, and
+  random benchmarks receive the same turn budget and are scored against the same
+  drawn event; none of the strategies may see it before allocating.
 - **Scores are computed server-side.** The leaderboard persists results the engine
   produced in that request; it never trusts a score value supplied by the client.
 

@@ -77,13 +77,14 @@ groups in [verification.md](./verification.md).
 
 ## Phase 4 — Benchmark strategies
 
-- [ ] T040 Implement `ai_allocation(baseline)` as the deterministic three-step
-      heuristic. Verify the San Lorenzo worked example yields `[25, 25, 10, 40]`.
-      [REQ-053]
-- [ ] T041 Implement `random_allocation(rng)` using Dirichlet weights and the
-      largest-remainder integer conversion. [REQ-053]
-- [ ] T042 Strategy tests: both always sum to 100, stay within range, and reproduce
-      under a seed; neither function accepts an event parameter. → V-STRAT
+- [ ] T040 Implement `ai_allocation(baseline, budget_total)` as the deterministic
+      three-step heuristic. Verify the 100-credit San Lorenzo worked example yields
+      `[25, 25, 10, 40]`. [REQ-053]
+- [ ] T041 Implement `random_allocation(rng, budget_total)` using Dirichlet weights
+      and the largest-remainder integer conversion. [REQ-053]
+- [ ] T042 Strategy tests: both always sum to the supplied positive turn budget, stay
+      within range, and reproduce under a seed; neither function accepts an event
+      parameter. → V-STRAT
       [REQ-054, REQ-055]
 
 ## Phase 5 — District data
@@ -147,15 +148,17 @@ groups in [verification.md](./verification.md).
 
 ## Phase 9 — Streamlit application
 
-- [ ] T090 Implement `riabita/ui/state.py`: session keys, round seed, `round_id`,
-      `player_id`, language, and cached district loading. [REQ-016, REQ-062]
-- [ ] T091 Implement the round orchestration described in
-      [architecture.md](./architecture.md): one seed, one generator, one event,
-      benchmark allocations built before the event is used, three simulations against
-      the same event. [REQ-033, REQ-053, REQ-054]
+- [ ] T090 Implement `riabita/ui/state.py`: session keys, progressive turn history,
+      stable `round_id`, remaining credits, `player_id`, language, and cached district
+      loading. [REQ-016, REQ-020, REQ-062]
+- [ ] T091 Implement the progressive round orchestration described in
+      [architecture.md](./architecture.md): one generator and event per turn,
+      equal-credit benchmark allocations built before the event is drawn, and three
+      cumulative simulations against the same event. [REQ-033, REQ-053, REQ-054]
 - [ ] T092 Build the sidebar: language selector, district selector with the demo
-      notice, baseline display, four sliders, live total and remainder, reset control,
-      and the simulate button gated on `total == 100`. [REQ-010, REQ-011, REQ-013, REQ-020, REQ-022, REQ-023, REQ-026]
+      notice, baseline display, four turn sliders, cumulative/current totals and
+      remainder, clear/restart controls, and the investment button gated on a positive
+      total no greater than the remainder. [REQ-010, REQ-011, REQ-013, REQ-020, REQ-022, REQ-023, REQ-026]
 - [ ] T093 Add the concentration warning when any allocation exceeds 60. [REQ-025]
 - [ ] T094 Build the results section: before-and-after deltas, RIz and yield, the
       profile badge, and the itemized modifier list. [REQ-050, REQ-051, REQ-057, REQ-058]
@@ -164,8 +167,9 @@ groups in [verification.md](./verification.md).
 - [ ] T096 [P] Render the benchmark comparison chart. [REQ-056]
 - [ ] T097 Render the district map for valid geometry, hiding it with an explanation
       otherwise. [REQ-015]
-- [ ] T098 Build the submission form and the leaderboard panel with the district
-      filter, empty state, and unavailable state. [REQ-060, REQ-063, REQ-066, REQ-067, REQ-071]
+- [ ] T098 Build the submission form and the leaderboard panel, locked until all
+      credits are invested, with the district filter, empty state, and unavailable
+      state. [REQ-060, REQ-063, REQ-066, REQ-067, REQ-071]
 - [ ] T099 Write `src/main.py` as composition only: load settings, build the
       repository, and call the view functions. No game logic. [REQ-038]
 

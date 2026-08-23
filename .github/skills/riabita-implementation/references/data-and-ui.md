@@ -77,9 +77,10 @@ Key naming uses `area.element`, for example `sidebar.budget_total`,
 2. District selector, showing the demo-data notice when applicable.
 3. Baseline values and initial RIz for the selected district.
 4. Four budget sliders in `(M, C, T, S)` order, integer step 1, range `0..100`.
-5. Allocated total and remaining credits, updating live (REQ-022).
-6. Reset-to-even-split control (REQ-026).
-7. Simulate button.
+5. Cumulative invested total, current turn total, and remaining credits, updating
+   live (REQ-022).
+6. Clear-turn and restart-game controls (REQ-026).
+7. Confirm-investment button.
 
 **Main area**
 
@@ -90,7 +91,7 @@ Key naming uses `area.element`, for example `sidebar.budget_total`,
 5. Radar chart (REQ-052).
 6. Event panel (REQ-043).
 7. Benchmark comparison chart (REQ-056).
-8. Nickname field and score submission (REQ-060).
+8. Nickname field and score submission after all credits are invested (REQ-060).
 9. Leaderboard with a district filter (REQ-066, REQ-067).
 
 Before the first simulation, show the baseline radar and a short how-to-play summary
@@ -98,13 +99,15 @@ instead of empty result panels.
 
 ## Budget controls
 
-The total drives three states:
+The current turn and cumulative totals drive these states:
 
 | Condition | Behavior |
 |---|---|
-| `total == 100` | Simulate enabled |
-| `total != 100` | Simulate disabled; message names the signed difference, for example "Remove 15 credits" (REQ-023) |
-| any allocation `> 60` | Non-blocking warning that the concentration penalty will apply (REQ-025) |
+| `0 < turn_total <= remaining` | Confirm investment enabled |
+| `turn_total == 0` | Confirm investment disabled |
+| `turn_total > remaining` | Confirm investment disabled; message names the exact number of credits to remove (REQ-023) |
+| any cumulative allocation `> 60` | Non-blocking warning that the concentration penalty will apply (REQ-025) |
+| `remaining == 0` | Turn controls hide and leaderboard submission becomes available |
 
 Compute the difference from the validation result rather than duplicating the rule in
 the view. Never let the view decide what is valid.

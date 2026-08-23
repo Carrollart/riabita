@@ -16,13 +16,15 @@ Each district is described by four dimensions, always in this order:
 | Tourism (T) | Attractiveness and visitor flow |
 | Socio-demographic (S) | Resident quality of life |
 
-You distribute exactly **100 credits** across the four. Investments produce
-direct and cross-dimensional effects, overtourism suppresses residential
-quality, one random event hits every round, and the final score rewards balance
-through equilibrium and diversification bonuses while penalizing concentration.
+You invest a total of **100 credits** across the four dimensions over one or
+more turns. Every turn may spend any positive number of the remaining credits,
+updates the district immediately, and draws a random event. The final score
+rewards balance through equilibrium and diversification bonuses while
+penalizing concentration.
 
-Your result is scored against an AI planner and a random visitor on the **same
-district and the same event**.
+Every turn is scored against an AI planner and a random visitor using the **same
+district, the same number of credits, and the same event**. A completed
+100-credit game can then be submitted to the leaderboard.
 
 ## Quick start
 

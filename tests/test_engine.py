@@ -19,6 +19,7 @@ from riabita.engine.simulator import (
     apply_matrix,
     apply_tourism_pressure,
     run_simulation,
+    run_turn,
 )
 
 TOLERANCE = 1e-9
@@ -248,6 +249,59 @@ def test_invalid_allocation_raises_validation_error() -> None:
     with pytest.raises(ValidationError) as excinfo:
         run_simulation(SAN_LORENZO, Allocation(10, 10, 10, 10))
     assert "allocation_sum" in excinfo.value.rules
+
+
+def test_progressive_turns_apply_to_the_previous_result() -> None:
+    starting = district(50, 50, 50, 50)
+    first = run_turn(
+        starting,
+        starting.baseline,
+        Allocation(0, 0, 0, 0),
+        Allocation(10, 0, 0, 0),
+    )
+    second = run_turn(
+        starting,
+        first.final,
+        first.allocation,
+        Allocation(0, 10, 0, 0),
+    )
+
+    assert first.final.as_array() == pytest.approx([51.0, 50.4, 50.3, 50.2])
+    assert second.final.as_array() == pytest.approx([51.2, 51.4, 50.8, 50.6])
+    assert second.initial == starting.baseline
+    assert second.allocation == Allocation(10, 10, 0, 0)
+
+
+def test_progressive_turn_retains_effects_from_earlier_events() -> None:
+    starting = district(50, 50, 50, 50)
+    transport = Event("transport", Dimensions(10, 2, 0, 2))
+    first = run_turn(
+        starting,
+        starting.baseline,
+        Allocation(0, 0, 0, 0),
+        Allocation(10, 0, 0, 0),
+        transport,
+    )
+    second = run_turn(
+        starting,
+        first.final,
+        first.allocation,
+        Allocation(0, 10, 0, 0),
+    )
+
+    assert second.final.mobility == pytest.approx(61.2)
+    assert second.final.socio == pytest.approx(52.6)
+
+
+def test_progressive_turn_rejects_spending_beyond_the_remaining_budget() -> None:
+    with pytest.raises(ValidationError) as excinfo:
+        run_turn(
+            SAN_LORENZO,
+            SAN_LORENZO.baseline,
+            Allocation(90, 0, 0, 0),
+            Allocation(11, 0, 0, 0),
+        )
+    assert "allocation_exceeds_remaining" in excinfo.value.rules
 
 
 def test_simulation_does_not_mutate_inputs() -> None:

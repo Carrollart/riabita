@@ -25,6 +25,10 @@ reporting a phase complete.
 - Rejects `-1` and `101` with `allocation_out_of_range`.
 - Rejects sums of `99` and `101` with `allocation_sum`, and the reported difference is
   signed (`-1` and `+1`).
+- Accepts a non-empty progressive turn whose total is below the remaining budget.
+- Rejects an all-zero progressive turn with `allocation_empty`.
+- Rejects a progressive turn above the remaining budget with
+  `allocation_exceeds_remaining` and reports the positive excess.
 - Accepts `[100, 0, 0, 0]`: it is valid input that later earns a concentration penalty.
 - Rejects a baseline dimension outside `0..100`.
 - Dataclass instances reject attribute assignment.
@@ -112,6 +116,11 @@ Streamlit, GeoPandas, or SQLAlchemy import anywhere in its import graph.
 
 **Version.** `SimulationResult.rules_version` equals `config.RULES_VERSION`.
 
+**Progressive turns.** A partial allocation is applied to the dimensions produced by
+the previous turn, including earlier event effects. Its result retains the original
+district baseline, reports the component-wise cumulative allocation, and rejects a
+turn that exceeds the remaining game budget.
+
 ## V-EVT — Events
 
 - The catalog contains the five documented IDs with the exact impact vectors.
@@ -131,6 +140,8 @@ Streamlit, GeoPandas, or SQLAlchemy import anywhere in its import graph.
 - The AI skips the lift when it would breach `0` or `60`, and still sums to `100`.
 - `random_allocation` sums to exactly `100` across many seeded draws, with every value
   within `0..100`.
+- Both strategies accept partial turn budgets, and each result sums exactly to the
+  supplied positive budget.
 - `random_allocation` is reproducible under a fixed seed.
 - Neither function accepts an event argument, verified by signature inspection.
 
@@ -199,13 +210,19 @@ Use `streamlit.testing.v1.AppTest` so these run headless in the suite.
 - The app starts and renders without exception using demo data and an isolated local
   SQLite database.
 - Selecting a district displays its baseline values.
-- A total other than `100` disables the simulate button.
-- A total of exactly `100` enables it.
-- Running a round produces exactly one event and three results that all reference that
-  same event ID.
+- An all-zero turn disables the investment button; any positive total no greater than
+  the remaining credits enables it.
+- A partial turn updates results immediately and reduces the remaining credits without
+  ending the round.
+- Multiple turns retain one `round_id`, accumulate allocations, and complete exactly
+  when the cumulative total reaches `100`.
+- Every turn produces exactly one event and three results that all reference that
+  event ID.
 - Benchmark allocations are computed before the event is applied, verified by asserting
   the same benchmark allocation across two runs that differ only in the drawn event.
-- Re-rendering without a new simulation does not change the event or the scores.
+- Re-rendering without a new turn does not change the event or the scores.
+- Every benchmark receives the same number of credits as the player in each turn.
+- Leaderboard submission remains locked until all `100` credits are invested.
 - `player_id` is stable within a session and absent from any user input widget.
 - With no database URL configured, the local SQLite leaderboard renders and accepts
   scores. With an unreachable configured database, results still render and the

@@ -13,7 +13,7 @@ from typing import Final
 
 import numpy as np
 
-RULES_VERSION: Final[str] = "1.0.0"
+RULES_VERSION: Final[str] = "2.0.0"
 
 # --- Dimensions -------------------------------------------------------------
 

@@ -93,6 +93,15 @@ def test_ai_shifts_credits_away_from_dominant_tourism() -> None:
     assert allocation.tourism < allocation.socio
 
 
+@pytest.mark.parametrize("budget_total", [1, 7, 25, 60])
+def test_ai_can_allocate_a_partial_turn_budget(budget_total: int) -> None:
+    allocation = strategies.ai_allocation(
+        Dimensions(55, 40, 80, 35), budget_total
+    )
+    assert allocation.total == budget_total
+    assert allocation.largest <= 60
+
+
 # --- Random strategy --------------------------------------------------------
 
 
@@ -114,6 +123,22 @@ def test_random_allocation_varies_between_seeds() -> None:
         for s in range(20)
     }
     assert len(results) > 1
+
+
+@pytest.mark.parametrize("budget_total", [1, 7, 25, 60])
+def test_random_can_allocate_a_partial_turn_budget(budget_total: int) -> None:
+    allocation = strategies.random_allocation(
+        np.random.default_rng(11), budget_total
+    )
+    assert allocation.total == budget_total
+
+
+@pytest.mark.parametrize("budget_total", [0, 101, 2.5, True])
+def test_strategies_reject_invalid_turn_budgets(budget_total) -> None:
+    with pytest.raises(ValueError):
+        strategies.ai_allocation(Dimensions(50, 50, 50, 50), budget_total)
+    with pytest.raises(ValueError):
+        strategies.random_allocation(np.random.default_rng(1), budget_total)
 
 
 # --- Fairness ---------------------------------------------------------------

@@ -34,10 +34,8 @@ def main() -> None:
 
     catalog = state.load_catalog(settings.districts_path)
     district = views.render_district_picker(catalog, lang)
-    allocation, simulate = views.render_budget_controls(lang)
-
-    if simulate:
-        state.store_round(state.play_round(district, allocation))
+    state.select_district(district.district_id)
+    views.render_budget_controls(district, lang)
 
     current = state.current_round()
     if current is None or current.district_id != district.district_id:
@@ -46,6 +44,7 @@ def main() -> None:
         st.caption(i18n.t("app.data_caption", lang))
         return
 
+    views.render_turn_status(current, lang)
     st.header(i18n.t("results.header", lang))
     results, profile = st.columns([3, 2])
     with results:
@@ -60,15 +59,19 @@ def main() -> None:
     with event:
         views.render_event(current.player, lang)
 
+    views.render_turn_history(current, lang)
     views.render_comparison(current, lang)
     views.render_map(district, lang)
-    views.render_leaderboard(
-        _repository(settings.database_url),
-        current,
-        catalog,
-        settings.leaderboard_limit,
-        lang,
-    )
+    if current.is_complete:
+        views.render_leaderboard(
+            _repository(settings.database_url),
+            current,
+            catalog,
+            settings.leaderboard_limit,
+            lang,
+        )
+    else:
+        views.render_locked_leaderboard(lang)
     st.caption(i18n.t("app.data_caption", lang))
 
 

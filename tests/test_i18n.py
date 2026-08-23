@@ -71,6 +71,8 @@ def test_every_modifier_profile_and_error_has_a_label(language: str) -> None:
             validation.RULE_ALLOCATION_NOT_INTEGER,
             validation.RULE_ALLOCATION_OUT_OF_RANGE,
             validation.RULE_ALLOCATION_SUM,
+            validation.RULE_ALLOCATION_EMPTY,
+            validation.RULE_ALLOCATION_EXCEEDS_REMAINING,
             validation.RULE_DIMENSION_OUT_OF_RANGE,
         )
     ]

@@ -14,9 +14,11 @@ Priority: **MVP** requirements must all ship for the app to be considered comple
 | RIz | Riabitability Index, the composite 0–100 score being maximized |
 | M, C, T, S | Mobility, Culture, Tourism, Socio-demographic dimensions, always in this order |
 | Dimension value | A 0–100 score for one of M, C, T, S |
-| Allocation | Credits assigned to one dimension; the four allocations sum to exactly 100 |
-| Round | One simulation: allocate, draw an event, score, compare, optionally submit |
-| Event | A random shock applied once per round to all three strategies |
+| Turn allocation | Credits assigned in one turn; the four values sum to a positive amount no greater than the remaining game budget |
+| Cumulative allocation | Credits assigned over all completed turns; the four values total at most 100 |
+| Round | One 100-credit game composed of one or more turns; it can be submitted after the budget is exhausted |
+| Turn | One progressive simulation: allocate from the remaining budget, draw an event, score, and compare |
+| Event | A random shock applied once per turn to all three strategies |
 
 ## Localization
 
@@ -45,13 +47,13 @@ Priority: **MVP** requirements must all ship for the app to be considered comple
 
 | ID | Requirement | Priority |
 |---|---|---|
-| REQ-020 | The player distributes exactly 100 credits across M, C, T, and S. | MVP |
+| REQ-020 | The player distributes a total of 100 credits across M, C, T, and S over one or more progressive turns. A turn spends at least one credit and no more than the remaining game budget. | MVP |
 | REQ-021 | Each allocation is an integer in the range 0–100 inclusive. | MVP |
-| REQ-022 | The app continuously displays the allocated total and the remaining credits. | MVP |
-| REQ-023 | The app blocks simulation while the total is not exactly 100 and states the exact corrective action, including the signed difference. | MVP |
+| REQ-022 | The app continuously displays the cumulative invested total, the current turn total, and the remaining credits. | MVP |
+| REQ-023 | The app blocks an empty turn or a turn that exceeds the remaining credits and states the exact corrective action. | MVP |
 | REQ-024 | The engine rejects any allocation set that fails validation, independently of the UI, and reports which rule failed. | MVP |
-| REQ-025 | The app warns before simulating when an allocation exceeds 60, because that triggers the concentration penalty. The warning informs, it does not block. | MVP |
-| REQ-026 | The player resets allocations to the default even split in one action. | MVP |
+| REQ-025 | The app warns before simulating when a cumulative allocation exceeds 60, because that triggers the concentration penalty. The warning informs, it does not block. | MVP |
+| REQ-026 | The player can clear the current turn allocation or restart the game with the full budget. | MVP |
 
 ## Simulation
 
@@ -60,7 +62,7 @@ Priority: **MVP** requirements must all ship for the app to be considered comple
 | REQ-030 | Investments apply direct and cross-dimensional effects using the impact matrix in [simulation-rules.md](./simulation-rules.md). | MVP |
 | REQ-031 | Matrix effects are computed from the pre-investment dimension values and applied atomically. | MVP |
 | REQ-032 | Tourism pressure reduces S when post-matrix T crosses the documented thresholds, using only the highest matching tier. | MVP |
-| REQ-033 | Exactly one random event applies per round, after investment effects. | MVP |
+| REQ-033 | Exactly one random event applies per turn, after that turn's investment effects. Earlier event effects persist in later turns. | MVP |
 | REQ-034 | Dimension values and the final RIz clamp to the range 0–100. | MVP |
 | REQ-035 | The engine applies equilibrium, overtourism-gap, concentration, and diversification modifiers, and returns each modifier as an individually itemized, explainable record. | MVP |
 | REQ-036 | The engine returns initial RIz, final RIz, urban yield, urban risk, and urban Sharpe ratio. | MVP |
@@ -85,9 +87,9 @@ Priority: **MVP** requirements must all ship for the app to be considered comple
 | REQ-050 | The results view compares each dimension before and after, showing the signed delta. | MVP |
 | REQ-051 | The results view shows initial RIz, final RIz, and the yield between them. | MVP |
 | REQ-052 | A radar chart overlays the initial profile and the final profile on a fixed 0–100 radial axis. | MVP |
-| REQ-053 | The app scores an AI benchmark strategy and a random benchmark strategy on the same district and the same event as the player. | MVP |
-| REQ-054 | Benchmark strategies allocate without access to the drawn event. | MVP |
-| REQ-055 | Both benchmark strategies produce allocations that satisfy the same validation rules as the player. | MVP |
+| REQ-053 | Each turn scores an AI benchmark strategy and a random benchmark strategy on the same district state, with the same number of credits and the same event as the player. | MVP |
+| REQ-054 | Benchmark strategies allocate for a turn before and without access to that turn's drawn event. | MVP |
+| REQ-055 | Both benchmark strategies produce turn allocations that satisfy the same remaining-budget rules as the player. | MVP |
 | REQ-056 | A comparison chart ranks the player against both benchmarks by final RIz. | MVP |
 | REQ-057 | The app assigns an urban profile from the final risk and yield, using the classification in [simulation-rules.md](./simulation-rules.md). | MVP |
 | REQ-058 | The app itemizes every applied bonus and penalty with its localized reason and signed value. | MVP |
@@ -97,7 +99,7 @@ Priority: **MVP** requirements must all ship for the app to be considered comple
 
 | ID | Requirement | Priority |
 |---|---|---|
-| REQ-060 | Completed rounds persist through SQLAlchemy. Development defaults to a project-local SQLite file; deployments use a configured PostgreSQL URL when scores must be shared across instances, browsers, and devices. | MVP |
+| REQ-060 | Completed 100-credit rounds persist through SQLAlchemy. In-progress rounds cannot be submitted. Development defaults to a project-local SQLite file; deployments use a configured PostgreSQL URL when scores must be shared across instances, browsers, and devices. | MVP |
 | REQ-061 | Each entry records a generated player ID, a nickname, the district, the four allocations, the event ID, the final RIz, yield, risk, Sharpe, the rules version, and a UTC timestamp. | MVP |
 | REQ-062 | The player ID is generated by the app and persists for the browser session. The player never supplies it. | MVP |
 | REQ-063 | Nicknames are validated for length and character set and are rejected when invalid, with a localized message. | MVP |
@@ -132,5 +134,5 @@ Do not implement these without an explicit new instruction from the user.
 - User registration, login, password reset, or any authenticated identity.
 - Strong anti-cheat guarantees beyond server-side score computation.
 - Deployment infrastructure, CI pipelines, containers, or hosting configuration.
-- Multiplayer turns, persistent campaigns, or multi-round progression.
+- Multiplayer turns or persistent campaigns across browser sessions.
 - Real-time data feeds or live municipal API integration.

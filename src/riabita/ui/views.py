@@ -9,7 +9,10 @@ from riabita import config, i18n
 from riabita.data.loader import DistrictCatalog
 from riabita.domain.errors import LeaderboardUnavailable
 from riabita.domain.models import Allocation, District, SimulationResult
-from riabita.domain.validation import RULE_ALLOCATION_SUM, validate_allocation
+from riabita.domain.validation import (
+    RULE_ALLOCATION_EXCEEDS_REMAINING,
+    validate_turn_allocation,
+)
 from riabita.leaderboard import service
 from riabita.leaderboard.repository import LeaderboardRepository
 from riabita.ui import charts, state
@@ -64,38 +67,61 @@ def render_district_picker(catalog: DistrictCatalog, lang: str) -> District:
     return district
 
 
-def render_budget_controls(lang: str) -> tuple[Allocation, bool]:
-    """Draw the sliders and return the allocation plus whether it can be run."""
+def render_budget_controls(district: District, lang: str) -> None:
+    """Draw controls for the next investment turn."""
     st.sidebar.header(i18n.t("sidebar.budget_header", lang))
     st.sidebar.caption(i18n.t("sidebar.budget_help", lang, total=config.BUDGET_TOTAL))
+
+    current = state.current_round()
+    remaining = state.remaining_credits()
+    committed = state.committed_allocation()
+    st.sidebar.markdown(
+        f"**{i18n.t('sidebar.allocated', lang, allocated=committed.total, total=config.BUDGET_TOTAL)}**"
+    )
+    st.sidebar.caption(i18n.t("sidebar.remaining", lang, remaining=remaining))
+
+    if current is not None and current.is_complete:
+        st.sidebar.success(
+            i18n.t("sidebar.game_complete", lang, turns=current.turn_count)
+        )
+        st.sidebar.button(
+            i18n.t("sidebar.restart", lang),
+            on_click=state.reset_game,
+            use_container_width=True,
+        )
+        return
 
     labels = i18n.dimension_labels(lang)
     for label, key in zip(labels, state.SLIDER_KEYS):
         st.sidebar.slider(
             label,
             min_value=config.ALLOCATION_MIN,
-            max_value=config.ALLOCATION_MAX,
+            max_value=remaining,
             step=1,
             key=key,
         )
 
     allocation = state.current_allocation()
-    total = allocation.total
     st.sidebar.markdown(
-        f"**{i18n.t('sidebar.allocated', lang, allocated=total, total=config.BUDGET_TOTAL)}**"
+        f"**{i18n.t('sidebar.turn_allocated', lang, allocated=allocation.total)}**"
     )
 
-    issues = validate_allocation(allocation.as_array().tolist())
-    sum_issue = next((i for i in issues if i.rule == RULE_ALLOCATION_SUM), None)
-    if sum_issue is not None:
-        difference = int(sum_issue.detail["difference"])
-        message_key = "budget.remove" if difference > 0 else "budget.add"
+    issues = validate_turn_allocation(allocation.as_array().tolist(), remaining)
+    exceeds = next(
+        (i for i in issues if i.rule == RULE_ALLOCATION_EXCEEDS_REMAINING), None
+    )
+    if exceeds is not None:
         st.sidebar.warning(
             i18n.t(
-                message_key, lang, count=abs(difference), total=config.BUDGET_TOTAL
+                "budget.exceeds_remaining",
+                lang,
+                count=int(exceeds.detail["difference"]),
+                remaining=remaining,
             )
         )
-    if allocation.largest > config.CONCENTRATION_LIMIT:
+
+    candidate = committed.plus(allocation)
+    if candidate.largest > config.CONCENTRATION_LIMIT:
         st.sidebar.warning(
             i18n.t(
                 "budget.concentration_warning",
@@ -105,15 +131,25 @@ def render_budget_controls(lang: str) -> tuple[Allocation, bool]:
         )
 
     st.sidebar.button(
-        i18n.t("sidebar.reset", lang), on_click=state.reset_budget, use_container_width=True
+        i18n.t("sidebar.reset", lang),
+        on_click=state.reset_budget,
+        use_container_width=True,
     )
-    simulate = st.sidebar.button(
+    st.sidebar.button(
         i18n.t("sidebar.simulate", lang),
         type="primary",
         disabled=bool(issues),
+        on_click=state.commit_turn,
+        args=(district,),
         use_container_width=True,
     )
-    return allocation, simulate
+
+    if current is not None:
+        st.sidebar.button(
+            i18n.t("sidebar.restart", lang),
+            on_click=state.reset_game,
+            use_container_width=True,
+        )
 
 
 def render_dimension_table(result: SimulationResult, lang: str) -> None:
@@ -182,6 +218,49 @@ def render_event(result: SimulationResult, lang: str) -> None:
                 i18n.t("results.dimension", lang): list(i18n.dimension_labels(lang)),
                 i18n.t("results.delta", lang): [
                     _signed(v) for v in event.impact.as_array()
+                ],
+            }
+        ),
+        hide_index=True,
+        use_container_width=True,
+    )
+
+
+def render_turn_status(current: state.Round, lang: str) -> None:
+    """Show progress through the shared 100-credit game budget."""
+    if current.is_complete:
+        st.success(
+            i18n.t(
+                "game.complete",
+                lang,
+                total=config.BUDGET_TOTAL,
+                turns=current.turn_count,
+            )
+        )
+        return
+    st.info(
+        i18n.t(
+            "game.progress",
+            lang,
+            turn=current.turn_count,
+            remaining=current.remaining_credits,
+        )
+    )
+
+
+def render_turn_history(current: state.Round, lang: str) -> None:
+    """List completed turns and their independently drawn events."""
+    st.subheader(i18n.t("turns.header", lang))
+    st.dataframe(
+        pd.DataFrame(
+            {
+                i18n.t("turns.turn", lang): [turn.number for turn in current.turns],
+                i18n.t("turns.credits", lang): [
+                    turn.credits_spent for turn in current.turns
+                ],
+                i18n.t("turns.event", lang): [
+                    i18n.t(turn.event.name_key, lang) if turn.event is not None else ""
+                    for turn in current.turns
                 ],
             }
         ),
@@ -346,3 +425,9 @@ def _render_submission(
         return
     state.mark_submitted(current.round_id)
     st.success(i18n.t("leaderboard.submitted", lang))
+
+
+def render_locked_leaderboard(lang: str) -> None:
+    """Explain why an in-progress game cannot be submitted yet."""
+    st.subheader(i18n.t("leaderboard.header", lang))
+    st.info(i18n.t("leaderboard.complete_budget", lang))
