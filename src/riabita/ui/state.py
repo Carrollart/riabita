@@ -7,7 +7,8 @@ and benchmark allocations built without seeing that turn's event.
 from __future__ import annotations
 
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Callable
 
 import numpy as np
 import streamlit as st
@@ -15,7 +16,7 @@ import streamlit as st
 from riabita import config, events, strategies
 from riabita.data.loader import DistrictCatalog, load_districts
 from riabita.domain.errors import ValidationError
-from riabita.domain.models import Allocation, District, Event, SimulationResult
+from riabita.domain.models import Allocation, Dimensions, District, Event, SimulationResult
 from riabita.domain.validation import validate_turn_allocation
 from riabita.engine.simulator import run_turn
 from riabita.leaderboard.service import new_id
@@ -25,7 +26,21 @@ KEY_PLAYER_ID = "player_id"
 KEY_ROUND = "round"
 KEY_DISTRICT = "active_district_id"
 KEY_SUBMITTED = "submitted_round_ids"
+KEY_STEP_MODE = "strategy_step_mode"
+KEY_STRATEGY_QUEUE = "strategy_queue"
 SLIDER_KEYS = tuple(f"budget_{key}" for key in config.DIMENSION_KEYS)
+
+RANDOM_STRATEGY = "random"
+AI_STRATEGY = "ai"
+
+
+@dataclass
+class StrategyQueue:
+    """Turns still to be played for an in-progress autoplay strategy."""
+
+    kind: str
+    turns: list[int] = field(default_factory=list)
+    rng: np.random.Generator = field(default_factory=np.random.default_rng)
 
 
 @dataclass(frozen=True)
@@ -90,6 +105,8 @@ def init_state(default_language: str) -> None:
     st.session_state.setdefault(KEY_ROUND, None)
     st.session_state.setdefault(KEY_DISTRICT, None)
     st.session_state.setdefault(KEY_SUBMITTED, set())
+    st.session_state.setdefault(KEY_STEP_MODE, False)
+    st.session_state.setdefault(KEY_STRATEGY_QUEUE, None)
     for key in SLIDER_KEYS:
         st.session_state.setdefault(key, config.ALLOCATION_MIN)
 
@@ -110,9 +127,15 @@ def current_round() -> Round | None:
     return st.session_state[KEY_ROUND]
 
 
+def is_district_locked() -> bool:
+    """Whether the district must stay fixed until the active game ends."""
+    current = current_round()
+    return current is not None and not current.is_complete
+
+
 def select_district(district_id: str) -> None:
     """Start fresh when the player changes district."""
-    if st.session_state[KEY_DISTRICT] == district_id:
+    if is_district_locked() or st.session_state[KEY_DISTRICT] == district_id:
         return
     st.session_state[KEY_DISTRICT] = district_id
     reset_game()
@@ -132,6 +155,7 @@ def reset_budget() -> None:
 def reset_game() -> None:
     """Discard the current game and restore the full 100-credit budget."""
     st.session_state[KEY_ROUND] = None
+    st.session_state[KEY_STRATEGY_QUEUE] = None
     reset_turn_allocation()
 
 
@@ -151,6 +175,15 @@ def remaining_credits() -> int:
     """Return credits still available in the active game."""
     current = current_round()
     return config.BUDGET_TOTAL if current is None else current.remaining_credits
+
+
+def is_step_mode() -> bool:
+    return st.session_state[KEY_STEP_MODE]
+
+
+def pending_strategy_queue() -> StrategyQueue | None:
+    """The in-progress autoplay queue, if a strategy has steps left to play."""
+    return st.session_state[KEY_STRATEGY_QUEUE]
 
 
 def mark_submitted(round_id: str) -> None:
@@ -255,4 +288,65 @@ def store_round(value: Round) -> None:
 def commit_turn(district: District) -> None:
     """Button callback that atomically plays a turn and clears its controls."""
     store_round(play_turn(district, current_allocation()))
+    st.session_state[KEY_STRATEGY_QUEUE] = None
     reset_turn_allocation()
+
+
+def _advance_strategy_queue(
+    district: District,
+    queue: StrategyQueue,
+    allocation_for: Callable[[int], Allocation],
+) -> None:
+    """Play one queued turn in step mode, or drain the whole queue otherwise."""
+    step_count = 1 if is_step_mode() else len(queue.turns)
+    for _ in range(step_count):
+        if not queue.turns:
+            break
+        turn_credits = queue.turns.pop(0)
+        store_round(play_turn(district, allocation_for(turn_credits)))
+    st.session_state[KEY_STRATEGY_QUEUE] = queue if queue.turns else None
+    reset_turn_allocation()
+
+
+def autoplay_random_strategy(district: District) -> None:
+    """Button callback: play the random strategy's turns, one queued at a time.
+
+    In step mode this plays a single turn per click; otherwise it drains the
+    rest of the queue immediately.
+    """
+    queue = pending_strategy_queue()
+    if queue is None or queue.kind != RANDOM_STRATEGY:
+        remaining = remaining_credits()
+        if remaining <= 0:
+            return
+        rng = np.random.default_rng()
+        queue = StrategyQueue(RANDOM_STRATEGY, strategies.random_turn_plan(rng, remaining), rng)
+    rng = queue.rng
+    _advance_strategy_queue(
+        district, queue, lambda turn_credits: strategies.random_allocation(rng, turn_credits)
+    )
+
+
+def autoplay_ai_strategy(district: District) -> None:
+    """Button callback: play the AI planner's turns, one queued at a time.
+
+    Re-evaluates the heuristic every turn against the baseline left by the
+    previous turn's event, so later turns react to events already resolved.
+    In step mode this plays a single turn per click; otherwise it drains the
+    rest of the queue immediately.
+    """
+    queue = pending_strategy_queue()
+    if queue is None or queue.kind != AI_STRATEGY:
+        remaining = remaining_credits()
+        if remaining <= 0:
+            return
+        queue = StrategyQueue(AI_STRATEGY, strategies.ai_turn_plan(remaining))
+
+    def allocation_for(turn_credits: int) -> Allocation:
+        current = current_round()
+        baseline: Dimensions = (
+            district.baseline if current is None else current.player.final
+        )
+        return strategies.ai_allocation(baseline, turn_credits)
+
+    _advance_strategy_queue(district, queue, allocation_for)

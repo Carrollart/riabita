@@ -83,6 +83,10 @@ def sidebar_button(app: AppTest, label: str):
     return next(button for button in app.sidebar.button if button.label == label)
 
 
+def district_selectbox(app: AppTest):
+    return app.sidebar.selectbox[1]
+
+
 def set_turn_allocation(app: AppTest, values: tuple[int, int, int, int]) -> AppTest:
     for index, value in enumerate(values):
         if app.sidebar.slider[index].value != value:
@@ -259,3 +263,122 @@ def test_concentration_warning_uses_the_cumulative_allocation() -> None:
     commit_turn(app)
     app.sidebar.slider[0].set_value(11).run()
     assert any("60" in w.value for w in app.sidebar.warning)
+
+
+def test_district_is_selectable_before_the_first_investment() -> None:
+    app = run_app()
+    assert district_selectbox(app).disabled is False
+
+
+def test_district_locks_once_a_turn_is_committed() -> None:
+    app = run_app()
+    set_turn_allocation(app, (30, 0, 0, 0))
+    commit_turn(app)
+    assert district_selectbox(app).disabled is True
+    assert any(
+        i18n.t("sidebar.district_locked", "it") in caption.value
+        for caption in app.sidebar.caption
+    )
+
+
+def test_district_unlocks_after_restarting_the_game() -> None:
+    app = run_app()
+    set_turn_allocation(app, (30, 0, 0, 0))
+    commit_turn(app)
+    sidebar_button(app, i18n.t("sidebar.restart", "it")).click().run()
+    assert district_selectbox(app).disabled is False
+
+
+def test_district_unlocks_once_the_budget_is_exhausted() -> None:
+    app = run_app()
+    set_turn_allocation(app, (100, 0, 0, 0))
+    commit_turn(app)
+    assert district_selectbox(app).disabled is False
+
+
+def test_random_strategy_button_plays_the_whole_game_in_several_turns() -> None:
+    app = run_app()
+    sidebar_button(app, i18n.t("sidebar.use_random", "it")).click().run()
+    current = app.session_state[state.KEY_ROUND]
+    assert current.is_complete
+    assert current.player.allocation.total == config.BUDGET_TOTAL
+    assert current.turn_count >= config.RANDOM_AUTOPLAY_MIN_TURNS
+    assert not app.sidebar.slider
+
+
+def test_ai_strategy_button_plays_the_whole_game_over_its_turn_horizon() -> None:
+    app = run_app()
+    sidebar_button(app, i18n.t("sidebar.use_ai", "it")).click().run()
+    current = app.session_state[state.KEY_ROUND]
+    assert current.is_complete
+    assert current.player.allocation.total == config.BUDGET_TOTAL
+    assert current.turn_count == config.AI_AUTOPLAY_TURNS
+    assert not app.sidebar.slider
+
+
+def test_strategy_buttons_only_spend_the_credits_left_after_a_manual_turn() -> None:
+    app = run_app()
+    set_turn_allocation(app, (40, 0, 0, 0))
+    commit_turn(app)
+    sidebar_button(app, i18n.t("sidebar.use_ai", "it")).click().run()
+    current = app.session_state[state.KEY_ROUND]
+    assert current.is_complete
+    assert current.player.allocation.total == config.BUDGET_TOTAL
+    # The manual turn plus the AI's own turn horizon on the remaining 60 credits.
+    assert current.turn_count == 1 + config.AI_AUTOPLAY_TURNS
+
+
+def strategy_checkbox(app: AppTest):
+    return app.sidebar.checkbox[0]
+
+
+def test_step_mode_plays_a_single_turn_per_click() -> None:
+    app = run_app()
+    strategy_checkbox(app).set_value(True).run()
+    sidebar_button(app, i18n.t("sidebar.use_ai", "it")).click().run()
+    current = app.session_state[state.KEY_ROUND]
+    assert current.turn_count == 1
+    assert not current.is_complete
+    queue = app.session_state[state.KEY_STRATEGY_QUEUE]
+    assert queue is not None
+    assert queue.kind == state.AI_STRATEGY
+    assert len(queue.turns) == config.AI_AUTOPLAY_TURNS - 1
+    assert any(
+        i18n.t("sidebar.strategy_step_pending", "it", remaining=len(queue.turns))
+        in info.value
+        for info in app.sidebar.info
+    )
+
+
+def test_step_mode_needs_one_click_per_turn_to_finish_the_ai_strategy() -> None:
+    app = run_app()
+    strategy_checkbox(app).set_value(True).run()
+    for _ in range(config.AI_AUTOPLAY_TURNS):
+        sidebar_button(app, i18n.t("sidebar.use_ai", "it")).click().run()
+    current = app.session_state[state.KEY_ROUND]
+    assert current.is_complete
+    assert current.turn_count == config.AI_AUTOPLAY_TURNS
+    assert app.session_state[state.KEY_STRATEGY_QUEUE] is None
+
+
+def test_disabling_step_mode_drains_the_rest_of_the_queue_on_the_next_click() -> None:
+    app = run_app()
+    strategy_checkbox(app).set_value(True).run()
+    sidebar_button(app, i18n.t("sidebar.use_ai", "it")).click().run()
+    strategy_checkbox(app).set_value(False).run()
+    sidebar_button(app, i18n.t("sidebar.use_ai", "it")).click().run()
+    current = app.session_state[state.KEY_ROUND]
+    assert current.is_complete
+    assert app.session_state[state.KEY_STRATEGY_QUEUE] is None
+
+
+def test_a_manual_turn_clears_a_pending_strategy_queue() -> None:
+    app = run_app()
+    strategy_checkbox(app).set_value(True).run()
+    sidebar_button(app, i18n.t("sidebar.use_ai", "it")).click().run()
+    assert app.session_state[state.KEY_STRATEGY_QUEUE] is not None
+
+    remaining = app.session_state[state.KEY_ROUND].remaining_credits
+    set_turn_allocation(app, (remaining, 0, 0, 0))
+    commit_turn(app)
+    assert app.session_state[state.KEY_STRATEGY_QUEUE] is None

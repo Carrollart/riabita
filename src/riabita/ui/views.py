@@ -49,8 +49,23 @@ def render_district_picker(catalog: DistrictCatalog, lang: str) -> District:
         st.sidebar.info(i18n.t("data.demo_notice", lang))
 
     names = list(catalog.names)
-    selected = st.sidebar.selectbox(i18n.t("sidebar.district_label", lang), names)
-    district = next(d for d in catalog.districts if d.name == selected)
+    current = state.current_round()
+    locked_district: District | None = None
+    if current is not None and not current.is_complete:
+        locked_district = catalog.get(current.district_id)
+
+    if locked_district is not None:
+        st.sidebar.selectbox(
+            i18n.t("sidebar.district_label", lang),
+            names,
+            index=names.index(locked_district.name),
+            disabled=True,
+        )
+        st.sidebar.caption(i18n.t("sidebar.district_locked", lang))
+        district = locked_district
+    else:
+        selected = st.sidebar.selectbox(i18n.t("sidebar.district_label", lang), names)
+        district = next(d for d in catalog.districts if d.name == selected)
 
     st.sidebar.caption(i18n.t("sidebar.baseline_header", lang))
     baseline = district.baseline.as_array()
@@ -92,6 +107,31 @@ def render_budget_controls(district: District, lang: str) -> None:
         return
 
     labels = i18n.dimension_labels(lang)
+    st.sidebar.caption(i18n.t("sidebar.strategy_help", lang))
+    st.sidebar.checkbox(
+        i18n.t("sidebar.step_mode", lang),
+        key=state.KEY_STEP_MODE,
+    )
+    strategy_random, strategy_ai = st.sidebar.columns(2)
+    strategy_random.button(
+        i18n.t("sidebar.use_random", lang),
+        on_click=state.autoplay_random_strategy,
+        args=(district,),
+        use_container_width=True,
+    )
+    strategy_ai.button(
+        i18n.t("sidebar.use_ai", lang),
+        on_click=state.autoplay_ai_strategy,
+        args=(district,),
+        use_container_width=True,
+    )
+
+    queue = state.pending_strategy_queue()
+    if queue is not None:
+        st.sidebar.info(
+            i18n.t("sidebar.strategy_step_pending", lang, remaining=len(queue.turns))
+        )
+
     for label, key in zip(labels, state.SLIDER_KEYS):
         st.sidebar.slider(
             label,

@@ -7,7 +7,7 @@ import inspect
 import numpy as np
 import pytest
 
-from riabita import events, strategies
+from riabita import config, events, strategies
 from riabita.domain.models import Dimensions
 from riabita.domain.validation import validate_allocation
 
@@ -139,6 +139,44 @@ def test_strategies_reject_invalid_turn_budgets(budget_total) -> None:
         strategies.ai_allocation(Dimensions(50, 50, 50, 50), budget_total)
     with pytest.raises(ValueError):
         strategies.random_allocation(np.random.default_rng(1), budget_total)
+
+
+# --- Multi-turn plans --------------------------------------------------------
+
+
+@pytest.mark.parametrize("budget_total", [1, 2, 5, 60, 100])
+def test_random_turn_plan_covers_the_full_budget_with_no_empty_turn(
+    budget_total: int,
+) -> None:
+    plan = strategies.random_turn_plan(np.random.default_rng(3), budget_total)
+    assert sum(plan) == budget_total
+    assert all(credits >= 1 for credits in plan)
+
+
+def test_random_turn_plan_uses_several_turns_when_the_budget_allows_it() -> None:
+    plan = strategies.random_turn_plan(np.random.default_rng(3), 100)
+    assert config.RANDOM_AUTOPLAY_MIN_TURNS <= len(plan) <= config.RANDOM_AUTOPLAY_MAX_TURNS
+
+
+def test_random_turn_plan_varies_between_seeds() -> None:
+    plans = {
+        tuple(strategies.random_turn_plan(np.random.default_rng(s), 100))
+        for s in range(20)
+    }
+    assert len(plans) > 1
+
+
+@pytest.mark.parametrize("budget_total", [1, 2, 5, 60, 100])
+def test_ai_turn_plan_covers_the_full_budget_with_no_empty_turn(
+    budget_total: int,
+) -> None:
+    plan = strategies.ai_turn_plan(budget_total)
+    assert sum(plan) == budget_total
+    assert all(credits >= 1 for credits in plan)
+
+
+def test_ai_turn_plan_uses_its_full_turn_horizon_when_the_budget_allows_it() -> None:
+    assert len(strategies.ai_turn_plan(100)) == config.AI_AUTOPLAY_TURNS
 
 
 # --- Fairness ---------------------------------------------------------------

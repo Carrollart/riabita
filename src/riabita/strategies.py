@@ -2,6 +2,12 @@
 
 Neither strategy sees the event for the current turn. Both receive the same
 number of credits the player chose to spend in that turn.
+
+The `*_turn_plan` functions split a budget across several turns so a strategy
+can be played out over the long term: the random plan invests a random amount
+each turn, and the AI plan re-evaluates `ai_allocation` every turn against the
+baseline left by the previous turn's event, so it reacts to events as they
+happen rather than committing to a single upfront guess.
 """
 
 from __future__ import annotations
@@ -51,6 +57,33 @@ def random_allocation(
     _validate_budget_total(budget_total)
     weights = rng.dirichlet(np.ones(4)) * budget_total
     return Allocation.from_array(_largest_remainder(weights, budget_total))
+
+
+def random_turn_plan(rng: np.random.Generator, budget_total: int) -> list[int]:
+    """Split the budget across a random number of turns of random size.
+
+    Every turn gets at least one credit; the rest of the budget is shared out
+    with the same random, largest-remainder rounding used for dimensions.
+    """
+    _validate_budget_total(budget_total)
+    max_turns = min(config.RANDOM_AUTOPLAY_MAX_TURNS, budget_total)
+    min_turns = min(config.RANDOM_AUTOPLAY_MIN_TURNS, max_turns)
+    turn_count = int(rng.integers(min_turns, max_turns + 1))
+    extra = budget_total - turn_count
+    if extra == 0:
+        return [1] * turn_count
+    weights = rng.dirichlet(np.ones(turn_count)) * extra
+    return [1 + share for share in _largest_remainder(weights, extra)]
+
+
+def ai_turn_plan(budget_total: int) -> list[int]:
+    """Split the budget evenly across the AI planner's long-term turn horizon."""
+    _validate_budget_total(budget_total)
+    turn_count = min(config.AI_AUTOPLAY_TURNS, budget_total)
+    even_share, remainder = divmod(budget_total, turn_count)
+    return [
+        even_share + (1 if index < remainder else 0) for index in range(turn_count)
+    ]
 
 
 def _largest_remainder(weights: np.ndarray, budget_total: int) -> list[int]:

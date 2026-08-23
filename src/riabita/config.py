@@ -34,6 +34,14 @@ ALLOCATION_MIN: Final[int] = 0
 ALLOCATION_MAX: Final[int] = 100
 CREDITS_PER_STEP: Final[float] = 10.0
 
+# --- Strategy autoplay -------------------------------------------------------
+# Turn horizons used when a strategy plays out the rest of the game for the
+# player instead of a single one-shot allocation.
+
+RANDOM_AUTOPLAY_MIN_TURNS: Final[int] = 3
+RANDOM_AUTOPLAY_MAX_TURNS: Final[int] = 6
+AI_AUTOPLAY_TURNS: Final[int] = 4
+
 # --- Impact matrix ----------------------------------------------------------
 # Rows are the investment area, columns the affected dimension, both in
 # (mobility, culture, tourism, socio) order. Values are change per 10 credits.
