@@ -6,6 +6,12 @@ one phase before starting the next.
 `[P]` marks tasks that are parallelizable with their immediate siblings because they
 touch different files and share no state.
 
+## Current implementation status
+
+Phases 0–9 and the automated parts of Phase 10 are implemented in the workspace and
+covered by the test suite. The remaining manual check is T101: verify the layout on a
+narrow viewport. Deferred items D01 and D02 remain intentionally out of scope.
+
 Read [simulation-rules.md](./simulation-rules.md) before Phase 2, and
 [architecture.md](./architecture.md) before Phase 1. Verification IDs (`V-*`) refer to
 groups in [verification.md](./verification.md).
@@ -31,7 +37,7 @@ groups in [verification.md](./verification.md).
       impact matrix, weights, and every threshold, bonus, and penalty constant from
       [simulation-rules.md](./simulation-rules.md). No literals elsewhere. [REQ-080, REQ-081]
 - [ ] T011 Add `get_settings()` to `config.py`, resolving `RIABITA_DATABASE_URL`,
-      `RIABITA_DISTRICTS_PATH`, `RIABITA_DEFAULT_LANGUAGE`, and
+      `RIABITA_DISTRICTS_PATH`, `RIABITA_DEFAULT_LANGUAGE` (`it`, `en`, or `fr`), and
       `RIABITA_LEADERBOARD_LIMIT` from the environment, then Streamlit secrets, then
       defaults. Use a project-local SQLite file when no database URL is configured.
       Never log resolved secrets. [REQ-060, REQ-069]
@@ -103,7 +109,7 @@ groups in [verification.md](./verification.md).
 
 ## Phase 6 — Localization
 
-- [ ] T060 Write `riabita/i18n.py` with the `it` and `en` catalogs and
+- [ ] T060 Write `riabita/i18n.py` with the `it`, `en`, and `fr` catalogs and
       `t(key, **params)` using the active-then-Italian-then-key fallback. [REQ-001, REQ-004]
 - [ ] T061 Populate keys for navigation, dimensions, budget, results, modifiers,
       profiles, events, leaderboard, and every error and empty state. [REQ-003, REQ-086]
@@ -164,7 +170,8 @@ groups in [verification.md](./verification.md).
       profile badge, and the itemized modifier list. [REQ-050, REQ-051, REQ-057, REQ-058]
 - [ ] T095 [P] Render the radar chart and the event panel with per-dimension impact.
       [REQ-043, REQ-052]
-- [ ] T096 [P] Render the benchmark comparison chart. [REQ-056]
+- [ ] T096 [P] Render the benchmark comparison chart, including the highest saved
+      score for the selected district when available. [REQ-056, REQ-056a]
 - [ ] T097 Render the district map for valid geometry, hiding it with an explanation
       otherwise. [REQ-015]
 - [ ] T098 Build the submission form and the leaderboard panel, locked until all

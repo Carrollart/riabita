@@ -22,31 +22,46 @@ updates the district immediately, and draws a random event. The final score
 rewards balance through equilibrium and diversification bonuses while
 penalizing concentration.
 
-Every turn is scored against an AI planner and a random visitor using the **same
+Every turn is scored against an AI planner and random choices using the **same
 district, the same number of credits, and the same event**. A completed
 100-credit game can then be submitted to the leaderboard.
+
+## Prerequisites
+
+Use Python **3.11 or newer**, as required by `pyproject.toml`. From the project
+root, create and activate a virtual environment, then install the dependencies:
+
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
 
 ## Quick start
 
 ```bash
-python -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python -m streamlit run src/main.py
 ```
+
+Then open the URL shown by Streamlit, normally `http://localhost:8501`. Do not
+start the application with `python src/main.py`: the entry point detects this
+case and prints the Streamlit command to use.
 
 The app runs immediately with bundled demo data and a local SQLite leaderboard at
 `.data/riabita.sqlite3`. The directory and schema are created on first use.
 
 ## Configuration
 
-All settings are optional and resolve from environment variables first, then
-Streamlit secrets.
+All settings are optional. The application resolves them from environment
+variables first, then from `.streamlit/secrets.toml`, and finally uses the
+defaults shown below. Environment variables therefore override values in the
+configuration file.
 
 | Variable | Purpose | Default |
 |---|---|---|
 | `RIABITA_DATABASE_URL` | SQLAlchemy URL for SQLite or PostgreSQL | `sqlite+pysqlite:///<project>/.data/riabita.sqlite3` |
 | `RIABITA_DISTRICTS_PATH` | Path to an official district GeoJSON | unset, demo data used |
-| `RIABITA_DEFAULT_LANGUAGE` | Starting language (`it` or `en`) | `it` |
+| `RIABITA_DEFAULT_LANGUAGE` | Starting language (`it`, `en`, or `fr`) | `it` |
 | `RIABITA_LEADERBOARD_LIMIT` | Rows shown in the leaderboard | `10` |
 
 The default SQLite file persists scores between local app restarts. You can also
@@ -64,6 +79,28 @@ export RIABITA_DATABASE_URL="postgresql+psycopg://user:password@host:5432/riabit
 
 The schema is created on first use for either database. Never commit credentials or
 local score files; `.env`, `.streamlit/secrets.toml`, and `.data/` are ignored by git.
+
+### Configuration file
+
+To configure the application without environment variables, copy
+`.streamlit/secrets.toml.example` to `.streamlit/secrets.toml` and edit the values:
+
+```bash
+mkdir -p .streamlit
+cp .streamlit/secrets.toml.example .streamlit/secrets.toml
+```
+
+The file uses TOML syntax and is read by `config.py` through Streamlit Secrets:
+
+```toml
+RIABITA_DATABASE_URL = "sqlite+pysqlite:///./.data/riabita.sqlite3"
+RIABITA_DISTRICTS_PATH = "./data/quartieri.geojson"
+RIABITA_DEFAULT_LANGUAGE = "it"
+RIABITA_LEADERBOARD_LIMIT = 10
+```
+
+Do not commit `.streamlit/secrets.toml` when it contains credentials or machine-
+specific paths. The example file contains only safe placeholder values.
 
 ### Supplying real district data
 
@@ -89,6 +126,42 @@ coordinate system, install the optional extra:
 
 > The bundled districts are **illustrative placeholders**, not authoritative RIz
 > research output. Their geometries are simplified rectangles.
+
+### Converting a Shapefile to GeoJSON
+
+The application reads GeoJSON files. To read a Shapefile or convert it to
+GeoJSON, install the optional GeoPandas dependency:
+
+```bash
+.venv/bin/python -m pip install -e ".[geo]"
+```
+
+Keep all files belonging to the Shapefile in the same directory, especially:
+
+```text
+quartieri.shp
+quartieri.shx
+quartieri.dbf
+quartieri.prj
+```
+
+Convert the file with this Python command:
+
+```bash
+.venv/bin/python - <<'PY'
+import geopandas as gpd
+
+districts = gpd.read_file("quartieri.shp")
+districts = districts.to_crs("EPSG:4326")
+districts.to_file("quartieri.geojson", driver="GeoJSON")
+PY
+```
+
+The `.prj` file identifies the source coordinate system. Reprojecting to
+`EPSG:4326` makes the result compatible with the district loader. The resulting
+GeoJSON must contain the properties `nome`, `M0`, `C0`, `T0`, and `S0`, with each
+dimension value between 0 and 100. Configure it with `RIABITA_DISTRICTS_PATH` in
+the environment or in `.streamlit/secrets.toml`.
 
 ## Running the tests
 

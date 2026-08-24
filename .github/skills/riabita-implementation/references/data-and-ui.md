@@ -31,7 +31,7 @@ unreadable custom file degrades to demo data; it never produces an empty app.
 ### Demo dataset
 
 Seed `data/demo_districts.geojson` from the district table in
-`Technical-Documentation.md` (Centro, San Lorenzo, Trastevere, Montesacro,
+the original research document (Centro, San Lorenzo, Trastevere, Montesacro,
 Trieste-Parioli, EUR, Ostia, Tuscolano, Magliana, Nomentano) with their documented
 `M0`, `C0`, `T0`, `S0` values and simplified polygons.
 
@@ -51,7 +51,8 @@ university RIz dataset.
 ## Localization
 
 `i18n.py` holds one nested catalog: `CATALOG[language][key] -> str`. Language codes
-are `it` and `en`, with `it` as default.
+are `it`, `en`, and `fr`, with `it` as default. The selector displays the matching
+flag for each language.
 
 Key naming uses `area.element`, for example `sidebar.budget_total`,
 `event.tourist_boom.name`, `error.allocation_sum`, `profile.resilient`.
@@ -61,7 +62,7 @@ Key naming uses `area.element`, for example `sidebar.budget_total`,
 - Parameterize with named placeholders, never string concatenation, so word order can
   differ between languages.
 - Resolution order is active language, then Italian, then the key itself (REQ-004).
-  A test asserts both catalogs have identical key sets, so a missing key fails CI
+  A test asserts all catalogs have identical key sets, so a missing key fails CI
   rather than reaching a player.
 - Dimension labels: Italian uses `Mobilità`, `Cultura`, `Turismo`, `Comunità`.
   English uses `Mobility`, `Culture`, `Tourism`, `Community`. The domain name for the
@@ -79,7 +80,7 @@ Key naming uses `area.element`, for example `sidebar.budget_total`,
 4. Four budget sliders in `(M, C, T, S)` order, integer step 1, range `0..100`.
 5. Cumulative invested total, current turn total, and remaining credits, updating
    live (REQ-022).
-6. Clear-turn and restart-game controls (REQ-026).
+6. Clear-investment and restart-game controls (REQ-026).
 7. Confirm-investment button.
 
 **Main area**
@@ -131,13 +132,14 @@ a `Figure` without calling Streamlit. That keeps them unit-testable (REQ-083).
 ### Comparison
 
 Horizontal bar chart of final RIz for the player, the AI planner, and the random
-visitor, sorted descending. Annotate each bar with its numeric value so the ranking
-does not depend on bar length or color alone (REQ-085).
+choices, sorted descending. When saved scores exist for the selected district, add
+the highest saved score as `Best player: <nickname>`. Annotate each bar with its
+numeric value so the ranking does not depend on bar length or color alone (REQ-085).
 
 ### Known defects in the brief
 
-The sample code in `Technical-Documentation.md` is broken in ways that are easy to
-copy by accident. Do not reproduce these:
+The sample code in the original research document is incomplete in ways that are
+easy to copy by accident. Do not reproduce these:
 
 - `dash='dash'` passed as a top-level `Scatterpolar` argument. It belongs in `line`.
 - `radialaxis=dict(visible=True, range=)`, a syntax error. Use `range=[0, 100]`.
@@ -146,6 +148,11 @@ copy by accident. Do not reproduce these:
 - `st.columns([2, 4])` unpacked into three variables, which raises at runtime.
 - `.iloc` without an index, and `allocations[5]` / `allocations[6]` on a length-4
   array, which raise `IndexError`.
+
+## Turn history
+
+The turn history lists the total credits and the player's credits assigned to each
+dimension in `(M, C, T, S)` order, together with the event for that turn.
 
 ## Score submission
 

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -65,6 +67,20 @@ def test_comparison_ranks_descending_with_value_labels() -> None:
     assert list(bar.text) == ["45.0", "51.7", "60.2"]
 
 
+def test_comparison_can_include_the_best_saved_player_score() -> None:
+    figure = charts.build_comparison(
+        {
+            "Tu": 51.7,
+            "AI Planner": 60.2,
+            "Scelte casuali": 45.0,
+            "Miglior giocatore: Ana": 72.4,
+        }
+    )
+    bar = figure.data[0]
+    assert "Miglior giocatore: Ana" in bar.y
+    assert "72.4" in bar.text
+
+
 def test_charts_do_not_import_streamlit() -> None:
     import inspect
 
@@ -105,6 +121,17 @@ def test_app_starts_with_demo_data_and_local_database() -> None:
     assert app.title[0].value == "RIABITA ROMA"
 
 
+def test_direct_entry_point_explains_streamlit_command() -> None:
+    result = subprocess.run(
+        [sys.executable, str(Path(APP))],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert "deve essere avviato con Streamlit" in result.stdout
+    assert ".venv/bin/python -m streamlit run src/main.py" in result.stdout
+
+
 def test_demo_notice_is_shown() -> None:
     app = run_app()
     assert any(i18n.t("data.demo_notice", "it") in info.value for info in app.info)
@@ -134,6 +161,21 @@ def test_partial_turn_produces_results_and_preserves_remaining_credits() -> None
     assert current.turn_count == 1
     assert current.remaining_credits == 60
     assert current.player.allocation == Allocation(40, 0, 0, 0)
+
+
+def test_turn_history_shows_each_player_dimension_investment() -> None:
+    app = run_app()
+    set_turn_allocation(app, (40, 10, 5, 0))
+    commit_turn(app)
+
+    history = next(
+        dataframe
+        for dataframe in app.dataframe
+        if i18n.t("turns.turn", "it") in dataframe.value.columns
+    )
+    row = history.value.iloc[0]
+    labels = i18n.dimension_labels("it")
+    assert [row[label] for label in labels] == [40, 10, 5, 0]
 
 
 def test_all_three_strategies_share_one_event() -> None:
@@ -230,6 +272,28 @@ def test_language_switch_translates_the_interface() -> None:
     assert any("Confirm investment" in b.label for b in app.sidebar.button)
 
 
+def test_french_language_switch_shows_translated_controls_and_flag() -> None:
+    app = run_app()
+    assert i18n.language_option("fr") in app.sidebar.selectbox[0].options
+    app.sidebar.selectbox[0].set_value("fr").run()
+    assert not app.exception
+    assert any("Confirmer l'investissement" in b.label for b in app.sidebar.button)
+
+
+def test_language_switch_preserves_step_by_step_checkbox() -> None:
+    app = run_app()
+    app.sidebar.checkbox[0].set_value(True).run()
+    app.sidebar.selectbox[0].set_value("en").run()
+    assert not app.exception
+    assert app.sidebar.checkbox[0].value is True
+
+
+def test_reset_button_is_labeled_as_investment_reset() -> None:
+    app = run_app()
+    assert i18n.t("sidebar.reset", "it") == "Azzera investimento"
+    assert any(b.label == "Azzera investimento" for b in app.sidebar.button)
+
+
 def test_language_switch_preserves_the_round() -> None:
     app = run_app()
     set_turn_allocation(app, (25, 0, 0, 0))
@@ -237,6 +301,36 @@ def test_language_switch_preserves_the_round() -> None:
     before = app.session_state[state.KEY_ROUND]
     app.sidebar.selectbox[0].set_value("en").run()
     assert app.session_state[state.KEY_ROUND] == before
+    assert not app.exception
+
+
+def test_language_switch_preserves_completed_bot_round_and_district() -> None:
+    app = run_app()
+    sidebar_button(app, i18n.t("sidebar.use_ai", "it")).click().run()
+    before = app.session_state[state.KEY_ROUND]
+    assert before is not None and before.is_complete
+    district_id = before.district_id
+
+    app.sidebar.selectbox[0].set_value("en").run()
+
+    after = app.session_state[state.KEY_ROUND]
+    assert after == before
+    assert after.district_id == district_id
+    assert not app.exception
+
+
+def test_language_switch_preserves_completed_random_round_and_district() -> None:
+    app = run_app()
+    sidebar_button(app, i18n.t("sidebar.use_random", "it")).click().run()
+    before = app.session_state[state.KEY_ROUND]
+    assert before is not None and before.is_complete
+    district_id = before.district_id
+
+    app.sidebar.selectbox[0].set_value("fr").run()
+
+    after = app.session_state[state.KEY_ROUND]
+    assert after == before
+    assert after.district_id == district_id
     assert not app.exception
 
 

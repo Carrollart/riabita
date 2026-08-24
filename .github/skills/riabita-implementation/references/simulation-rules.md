@@ -1,7 +1,7 @@
 # Simulation Rules
 
 Authoritative specification of RIABITA ROMA's mathematics. This file overrides the
-sample code in `Technical-Documentation.md`. Implement exactly what is written here.
+sample code in the original research document. Implement exactly what is written here.
 
 All values are floating point internally. Round only for display.
 

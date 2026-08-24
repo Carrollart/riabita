@@ -6,23 +6,35 @@ Composition only: resolve settings, load data, wire the views. Run with
 
 from __future__ import annotations
 
+from collections.abc import Callable
+from typing import Any
+
 import streamlit as st
 
-from riabita import config, i18n
-from riabita.domain.errors import LeaderboardUnavailable
-from riabita.leaderboard.repository import LeaderboardRepository, build_repository
-from riabita.ui import state, views
+_IS_STREAMLIT = bool(
+    getattr(getattr(st, "runtime", None), "exists", lambda: False)()
+)
 
 
-@st.cache_resource(show_spinner=False)
-def _repository(database_url: str | None) -> LeaderboardRepository | None:
+def _repository_impl(database_url: str | None) -> Any:
+    from riabita.domain.errors import LeaderboardUnavailable
+    from riabita.leaderboard.repository import build_repository
+
     try:
         return build_repository(database_url)
     except LeaderboardUnavailable:
         return None
 
 
+_repository: Callable[[str | None], Any] = _repository_impl
+if _IS_STREAMLIT:
+    _repository = st.cache_resource(show_spinner=False)(_repository_impl)
+
+
 def main() -> None:
+    from riabita import config, i18n
+    from riabita.ui import state, views
+
     st.set_page_config(page_title="RIABITA ROMA", layout="wide")
 
     settings = config.get_settings()
@@ -60,11 +72,12 @@ def main() -> None:
         views.render_event(current.player, lang)
 
     views.render_turn_history(current, lang)
-    views.render_comparison(current, lang)
+    repository = _repository(settings.database_url)
+    views.render_comparison(current, repository, lang)
     views.render_map(district, lang)
     if current.is_complete:
         views.render_leaderboard(
-            _repository(settings.database_url),
+            repository,
             current,
             catalog,
             settings.leaderboard_limit,
@@ -75,4 +88,10 @@ def main() -> None:
     st.caption(i18n.t("app.data_caption", lang))
 
 
-main()
+if _IS_STREAMLIT:
+    main()
+else:
+    print(
+        "RIABITA ROMA deve essere avviato con Streamlit. "
+        "Usa: .venv/bin/python -m streamlit run src/main.py"
+    )

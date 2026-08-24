@@ -35,11 +35,10 @@ def render_language_selector() -> str:
         i18n.t("language.label", current),
         options=languages,
         index=languages.index(current) if current in languages else 0,
-        format_func=i18n.language_name,
+        format_func=i18n.language_option,
     )
     if chosen != current:
         state.set_language(chosen)
-        st.rerun()
     return chosen
 
 
@@ -64,7 +63,11 @@ def render_district_picker(catalog: DistrictCatalog, lang: str) -> District:
         st.sidebar.caption(i18n.t("sidebar.district_locked", lang))
         district = locked_district
     else:
-        selected = st.sidebar.selectbox(i18n.t("sidebar.district_label", lang), names)
+        selected = st.sidebar.selectbox(
+            i18n.t("sidebar.district_label", lang),
+            names,
+            key=state.KEY_DISTRICT_SELECTOR,
+        )
         district = next(d for d in catalog.districts if d.name == selected)
 
     st.sidebar.caption(i18n.t("sidebar.baseline_header", lang))
@@ -77,7 +80,7 @@ def render_district_picker(catalog: DistrictCatalog, lang: str) -> District:
             }
         ),
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
     )
     return district
 
@@ -102,7 +105,7 @@ def render_budget_controls(district: District, lang: str) -> None:
         st.sidebar.button(
             i18n.t("sidebar.restart", lang),
             on_click=state.reset_game,
-            use_container_width=True,
+            width="stretch",
         )
         return
 
@@ -117,13 +120,13 @@ def render_budget_controls(district: District, lang: str) -> None:
         i18n.t("sidebar.use_random", lang),
         on_click=state.autoplay_random_strategy,
         args=(district,),
-        use_container_width=True,
+        width="stretch",
     )
     strategy_ai.button(
         i18n.t("sidebar.use_ai", lang),
         on_click=state.autoplay_ai_strategy,
         args=(district,),
-        use_container_width=True,
+        width="stretch",
     )
 
     queue = state.pending_strategy_queue()
@@ -173,7 +176,7 @@ def render_budget_controls(district: District, lang: str) -> None:
     st.sidebar.button(
         i18n.t("sidebar.reset", lang),
         on_click=state.reset_budget,
-        use_container_width=True,
+        width="stretch",
     )
     st.sidebar.button(
         i18n.t("sidebar.simulate", lang),
@@ -181,14 +184,14 @@ def render_budget_controls(district: District, lang: str) -> None:
         disabled=bool(issues),
         on_click=state.commit_turn,
         args=(district,),
-        use_container_width=True,
+        width="stretch",
     )
 
     if current is not None:
         st.sidebar.button(
             i18n.t("sidebar.restart", lang),
             on_click=state.reset_game,
-            use_container_width=True,
+            width="stretch",
         )
 
 
@@ -207,7 +210,7 @@ def render_dimension_table(result: SimulationResult, lang: str) -> None:
             }
         ),
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
     )
 
 
@@ -262,7 +265,7 @@ def render_event(result: SimulationResult, lang: str) -> None:
             }
         ),
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
     )
 
 
@@ -291,6 +294,8 @@ def render_turn_status(current: state.Round, lang: str) -> None:
 def render_turn_history(current: state.Round, lang: str) -> None:
     """List completed turns and their independently drawn events."""
     st.subheader(i18n.t("turns.header", lang))
+    dimension_labels = i18n.dimension_labels(lang)
+    player_allocations = [turn.player_allocation.as_array() for turn in current.turns]
     st.dataframe(
         pd.DataFrame(
             {
@@ -298,6 +303,10 @@ def render_turn_history(current: state.Round, lang: str) -> None:
                 i18n.t("turns.credits", lang): [
                     turn.credits_spent for turn in current.turns
                 ],
+                dimension_labels[0]: [allocation[0] for allocation in player_allocations],
+                dimension_labels[1]: [allocation[1] for allocation in player_allocations],
+                dimension_labels[2]: [allocation[2] for allocation in player_allocations],
+                dimension_labels[3]: [allocation[3] for allocation in player_allocations],
                 i18n.t("turns.event", lang): [
                     i18n.t(turn.event.name_key, lang) if turn.event is not None else ""
                     for turn in current.turns
@@ -305,7 +314,7 @@ def render_turn_history(current: state.Round, lang: str) -> None:
             }
         ),
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
     )
 
 
@@ -319,21 +328,34 @@ def render_radar(result: SimulationResult, lang: str) -> None:
             i18n.t("results.radar_initial", lang),
             i18n.t("results.radar_final", lang),
         ),
-        use_container_width=True,
+        width="stretch",
     )
 
 
-def render_comparison(current: state.Round, lang: str) -> None:
+def render_comparison(
+    current: state.Round, repository: LeaderboardRepository | None, lang: str
+) -> None:
     st.subheader(i18n.t("compare.header", lang))
+    scores = {
+        i18n.t("compare.you", lang): current.player.riz_final,
+        i18n.t("compare.ai", lang): current.ai.riz_final,
+        i18n.t("compare.random", lang): current.random.riz_final,
+    }
+    if repository is not None:
+        try:
+            best_entries = service.top_entries(
+                repository, limit=1, district_id=current.district_id
+            )
+        except LeaderboardUnavailable:
+            best_entries = ()
+        if best_entries:
+            best_player = best_entries[0]
+            best_label = f"{i18n.t('compare.best_player', lang)}: {best_player.nickname}"
+            scores[best_label] = best_player.riz_final
+
     st.plotly_chart(
-        charts.build_comparison(
-            {
-                i18n.t("compare.you", lang): current.player.riz_final,
-                i18n.t("compare.ai", lang): current.ai.riz_final,
-                i18n.t("compare.random", lang): current.random.riz_final,
-            }
-        ),
-        use_container_width=True,
+        charts.build_comparison(scores),
+        width="stretch",
     )
 
 
@@ -417,7 +439,7 @@ def render_leaderboard(
             }
         ),
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
     )
 
 

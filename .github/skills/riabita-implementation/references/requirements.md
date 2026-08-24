@@ -24,10 +24,10 @@ Priority: **MVP** requirements must all ship for the app to be considered comple
 
 | ID | Requirement | Priority |
 |---|---|---|
-| REQ-001 | The interface supports Italian and English. Italian is the default. | MVP |
+| REQ-001 | The interface supports Italian, English, and French. Italian is the default. | MVP |
 | REQ-002 | The player switches language at any time. Switching re-renders all visible text, including results already on screen, without losing the current round. | MVP |
 | REQ-003 | Every user-facing string resolves from a central catalog keyed by a stable identifier. No literal display text is embedded in view or engine code. | MVP |
-| REQ-004 | Both catalogs define the same key set. A missing key is a test failure, not a runtime crash; at runtime an unresolved key falls back to Italian and then to the key itself. | MVP |
+| REQ-004 | All catalogs define the same key set. A missing key is a test failure, not a runtime crash; at runtime an unresolved key falls back to Italian and then to the key itself. | MVP |
 | REQ-005 | Numbers and dates render in a format appropriate to the active language. | Later |
 
 ## District selection
@@ -91,6 +91,7 @@ Priority: **MVP** requirements must all ship for the app to be considered comple
 | REQ-054 | Benchmark strategies allocate for a turn before and without access to that turn's drawn event. | MVP |
 | REQ-055 | Both benchmark strategies produce turn allocations that satisfy the same remaining-budget rules as the player. | MVP |
 | REQ-056 | A comparison chart ranks the player against both benchmarks by final RIz. | MVP |
+| REQ-056a | When saved scores exist for the selected district, the comparison chart includes the highest score and the player's nickname. | MVP |
 | REQ-057 | The app assigns an urban profile from the final risk and yield, using the classification in [simulation-rules.md](./simulation-rules.md). | MVP |
 | REQ-058 | The app itemizes every applied bonus and penalty with its localized reason and signed value. | MVP |
 | REQ-059 | The results view shows the percentage change in RIz relative to the starting score, as required by section A.10 of the original research document. | MVP |

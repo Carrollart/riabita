@@ -124,7 +124,7 @@ turn that exceeds the remaining game budget.
 ## V-EVT — Events
 
 - The catalog contains the five documented IDs with the exact impact vectors.
-- Every event resolves a name and description key in both catalogs.
+- Every event resolves a name and description key in all catalogs.
 - `draw_event` with a fixed seed returns the same event every time.
 - `draw_event` covers all five events across many seeded draws.
 - `get_event` returns `None` or raises a defined error for an unknown ID; it never
@@ -168,7 +168,7 @@ Use `tmp_path` fixtures; never a machine-specific path.
 - Keys with placeholders declare the same placeholder names in both languages.
 - An unknown key resolves to Italian, then to the key itself, without raising.
 - Every event ID, modifier ID, profile ID, and validation error identifier has a
-  corresponding key in both catalogs.
+  corresponding key in all catalogs.
 
 ## V-CHART — Charts
 
@@ -176,8 +176,9 @@ Use `tmp_path` fixtures; never a machine-specific path.
 - Each radar trace repeats its first value and first category at the end.
 - The radial axis range is exactly `[0, 100]`.
 - The baseline trace sets `dash` inside `line`.
-- The comparison figure contains three labeled entries sorted by RIz descending, each
-  with a numeric annotation.
+- The comparison figure contains the three benchmark entries sorted by RIz descending,
+  each with a numeric annotation. When a district has saved scores, it also contains
+  the highest score with the player's nickname in the label.
 - Both builders return a figure without importing Streamlit.
 
 ## V-LB — Leaderboard

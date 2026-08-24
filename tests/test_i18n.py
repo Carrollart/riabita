@@ -100,6 +100,12 @@ def test_dimension_labels_follow_vector_order() -> None:
     assert i18n.dimension_labels("en") == ("Mobility", "Culture", "Tourism", "Community")
 
 
+def test_french_translation_and_flag_are_available() -> None:
+    assert i18n.t("language.label", "fr") == "Langue"
+    assert i18n.t("sidebar.reset", "fr") == "Réinitialiser l'investissement"
+    assert i18n.language_option("fr") == "🇫🇷 Français"
+
+
 def test_italian_is_the_default_language() -> None:
     assert i18n.DEFAULT_LANGUAGE == "it"
     assert i18n.t("dimension.socio") == "Comunità"

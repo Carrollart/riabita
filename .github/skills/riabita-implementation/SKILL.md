@@ -20,12 +20,10 @@ bonuses, and random event shocks.
 
 ## Source of Truth
 
-[docs/doc.md/DOC-20260609-WA0016.md](../../../docs/doc.md/DOC-20260609-WA0016.md) is
-the original Italian research document and the highest authority on intent.
-[docs/Technical-Documentation.md](../../../docs/Technical-Documentation.md) is the
-derived product brief. Both are historical context only: the brief's inline code
-samples contain defects (out-of-range list indices, truncated Plotly ranges,
-mismatched Streamlit column counts) and both leave several constants undefined.
+[docs/DOC-20260609-WA0016.md](../../../docs/DOC-20260609-WA0016.md) is the original
+Italian research document and the highest authority on intent. It is historical
+context only; its inline code samples may contain defects and leave several
+constants undefined.
 
 **The references in this skill override both sources wherever they disagree.** Never
 copy code verbatim out of the brief.

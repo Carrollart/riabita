@@ -165,7 +165,7 @@ secrets. Never commit values or log them (REQ-069).
 |---|---|---|
 | `RIABITA_DATABASE_URL` | SQLAlchemy URL for SQLite or PostgreSQL | project-local `.data/riabita.sqlite3` |
 | `RIABITA_DISTRICTS_PATH` | Official GeoJSON path | unset; demo data used |
-| `RIABITA_DEFAULT_LANGUAGE` | `it` or `en` | `it` |
+| `RIABITA_DEFAULT_LANGUAGE` | `it`, `en`, or `fr` | `it` |
 | `RIABITA_LEADERBOARD_LIMIT` | Rows displayed | `10` |
 
 Expose a single `get_settings()` returning a frozen settings object. When

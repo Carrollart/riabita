@@ -28,6 +28,7 @@ KEY_DISTRICT = "active_district_id"
 KEY_SUBMITTED = "submitted_round_ids"
 KEY_STEP_MODE = "strategy_step_mode"
 KEY_STRATEGY_QUEUE = "strategy_queue"
+KEY_DISTRICT_SELECTOR = "district_selector"
 SLIDER_KEYS = tuple(f"budget_{key}" for key in config.DIMENSION_KEYS)
 
 RANDOM_STRATEGY = "random"
