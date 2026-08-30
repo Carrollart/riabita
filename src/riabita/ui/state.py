@@ -234,7 +234,12 @@ def play_turn(
 
     # Benchmarks allocate first from the state produced by earlier turns, so
     # neither can react to the event that is about to be drawn.
-    ai_credits = strategies.ai_allocation(ai_current, credits_spent)
+    ai_credits = strategies.ai_allocation(
+        ai_current,
+        credits_spent,
+        district.district_id,
+        ai_cumulative,
+    )
     random_credits = strategies.random_allocation(rng, credits_spent)
 
     event = events.draw_event(rng)
@@ -346,8 +351,18 @@ def autoplay_ai_strategy(district: District) -> None:
     def allocation_for(turn_credits: int) -> Allocation:
         current = current_round()
         baseline: Dimensions = (
-            district.baseline if current is None else current.player.final
+            district.baseline if current is None else current.ai.final
         )
-        return strategies.ai_allocation(baseline, turn_credits)
+        cumulative = (
+            Allocation(0, 0, 0, 0)
+            if current is None
+            else current.ai.allocation
+        )
+        return strategies.ai_allocation(
+            baseline,
+            turn_credits,
+            district.district_id,
+            cumulative,
+        )
 
     _advance_strategy_queue(district, queue, allocation_for)

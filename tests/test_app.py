@@ -146,6 +146,43 @@ def test_generated_carme_data_is_used_by_default() -> None:
     assert len(district_selectbox(app).options) == 35
 
 
+def _gwr_tables(dataframes):
+    return [
+        dataframe.value
+        for dataframe in dataframes
+        if i18n.t("gwr.coefficient", "it") in dataframe.value.columns
+    ]
+
+
+def test_active_gwr_profile_is_displayed_for_selected_district() -> None:
+    app = run_app()
+    tables = _gwr_tables(app.dataframe)
+
+    assert len(tables) == 2
+    assert list(tables[0].iloc[:, 1]) == pytest.approx([0.41, 0.32, 0.27, -0.05])
+
+
+def test_active_gwr_profile_updates_when_district_changes() -> None:
+    app = run_app()
+    catalog = state.load_catalog(str(config.DEFAULT_CARME_GEOJSON_PATH))
+    ostiense = catalog.get("C6")
+    assert ostiense is not None
+
+    district_selectbox(app).set_value(ostiense.name).run()
+    tables = _gwr_tables(app.dataframe)
+
+    assert len(tables) == 2
+    assert list(tables[0].iloc[:, 1]) == pytest.approx([-0.07, 0.02, -0.05, 0.38])
+
+
+def test_active_gwr_profile_remains_after_a_turn() -> None:
+    app = run_app()
+    set_turn_allocation(app, (20, 0, 0, 0))
+    commit_turn(app)
+
+    assert len(_gwr_tables(app.dataframe)) == 2
+
+
 def test_turn_is_disabled_until_at_least_one_credit_is_allocated() -> None:
     app = run_app()
     confirm = sidebar_button(app, i18n.t("sidebar.simulate", "it"))

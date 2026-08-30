@@ -5,7 +5,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
-from riabita import config, i18n
+from riabita import config, i18n, strategies
 from riabita.data.loader import DistrictCatalog
 from riabita.domain.errors import LeaderboardUnavailable
 from riabita.domain.models import District, SimulationResult
@@ -82,7 +82,30 @@ def render_district_picker(catalog: DistrictCatalog, lang: str) -> District:
         hide_index=True,
         width="stretch",
     )
+    render_gwr_profile(district, lang, sidebar=True)
     return district
+
+
+def render_gwr_profile(district: District, lang: str, *, sidebar: bool = False) -> None:
+    """Display the district's active GWR band and priority coefficients."""
+    target = st.sidebar if sidebar else st
+    band, coefficients = strategies.gwr_profile(district.district_id)
+    target.subheader(i18n.t("gwr.header", lang))
+    target.caption(i18n.t("gwr.description", lang))
+    target.caption(i18n.t("gwr.band", lang, minutes=band))
+    target.dataframe(
+        pd.DataFrame(
+            {
+                i18n.t("results.dimension", lang): list(i18n.dimension_labels(lang)),
+                i18n.t("gwr.coefficient", lang): [
+                    coefficients[key]
+                    for key in ("mob", "cult", "tour", "socio")
+                ],
+            }
+        ),
+        hide_index=True,
+        width="stretch",
+    )
 
 
 def render_budget_controls(district: District, lang: str) -> None:

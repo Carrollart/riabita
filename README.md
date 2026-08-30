@@ -26,6 +26,29 @@ Every turn is scored against an AI planner and random choices using the **same
 district, the same number of credits, and the same event**. A completed
 100-credit game can then be submitted to the leaderboard.
 
+### GWR-aware AI planner
+
+The AI Planner uses the CArME Geographically Weighted Regression (GWR) profiles
+to model local spatial priorities while preserving the game’s official scoring
+rules. For each progressive turn it:
+
+1. searches valid allocations for the credits available in that turn;
+2. maximizes the authoritative game score, including modifiers; and
+3. uses the active GWR projection of the final `(M, C, T, S)` dimensions only to
+  break equal-score ties.
+
+The supplied profiles cover 5, 10, 15, 20, 25, and 30-minute walking bands.
+`A0` uses 5 minutes; numeric A/B/C district IDs use the lower band for suffixes
+0–4 and the upper band for higher suffixes. Composite IDs, `Studio_*`, malformed
+IDs, and unknown IDs use the 15-minute fallback profile. The active profile is
+shown in the sidebar and main dashboard after you select a district.
+
+The planner is deterministic, event-blind, and progressive: it uses the AI’s
+current dimensions and cumulative allocation, chooses before the shared event,
+and spends the same number of credits as the player. The complete coefficient
+matrix is maintained in [`strategies.py`](src/riabita/strategies.py) and described
+in [GWR Coefficients and Spatial AI Planning Strategy](docs/GWR%20Coefficients%20and%20Spatial%20AI%20Planning%20Strategy.md).
+
 ## Prerequisites
 
 Use Python **3.11 or newer**, as required by `pyproject.toml`. From the project

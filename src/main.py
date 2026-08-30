@@ -48,6 +48,7 @@ def main() -> None:
     views.render_selection_map(catalog, lang)
     district = views.render_district_picker(catalog, lang)
     state.select_district(district.district_id)
+    views.render_gwr_profile(district, lang)
     views.render_budget_controls(district, lang)
 
     current = state.current_round()

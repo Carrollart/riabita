@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import inspect
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
 
 from riabita import config, events, strategies
-from riabita.domain.models import Dimensions
-from riabita.domain.validation import validate_allocation
+from riabita.domain.models import Allocation, Dimensions
+from riabita.domain.validation import validate_allocation, validate_turn_allocation
 
 DEMO_BASELINES = {
     "Centro": (70, 90, 100, 25),
@@ -86,6 +87,49 @@ def test_ai_allocation_is_valid_for_every_demo_district(
 def test_ai_allocation_is_deterministic() -> None:
     baseline = Dimensions(55, 40, 80, 35)
     assert strategies.ai_allocation(baseline) == strategies.ai_allocation(baseline)
+
+
+@pytest.mark.parametrize(
+    ("district_id", "expected"),
+    [("A0", 5), ("A10", 10), ("B1", 15), ("B6", 20), ("C1", 25), ("C6", 30)],
+)
+def test_gwr_temporal_band_matches_district_id(district_id: str, expected: int) -> None:
+    assert strategies.temporal_band(district_id) == expected
+
+
+@pytest.mark.parametrize("district_id", ["A1B1", "Studio_1", "unknown", ""])
+def test_gwr_temporal_band_uses_average_fallback(district_id: str) -> None:
+    assert strategies.temporal_band(district_id) == 15
+
+
+def test_gwr_profile_preserves_dimension_order_and_values() -> None:
+    band, profile = strategies.gwr_profile("C6")
+    assert band == 30
+    assert [profile[key] for key in ("mob", "cult", "tour", "socio")] == pytest.approx(
+        [-0.07, 0.02, -0.05, 0.38]
+    )
+
+
+@pytest.mark.parametrize("budget_total", [1, 5, 25, 100])
+def test_gwr_allocation_is_valid_for_partial_and_full_budgets(
+    budget_total: int,
+) -> None:
+    allocation = strategies.ai_allocation(
+        Dimensions(55, 40, 80, 35), budget_total, "C6"
+    )
+    assert allocation.total == budget_total
+    assert validate_turn_allocation(allocation.as_array().tolist(), budget_total) == ()
+
+
+def test_gwr_fit_breaks_only_equal_game_scores(monkeypatch) -> None:
+    def fake_run_turn(_district, _baseline, _cumulative, candidate):
+        return SimpleNamespace(riz_final=1.0, final=Dimensions.from_array(candidate.as_array()))
+
+    monkeypatch.setattr(strategies, "run_turn", fake_run_turn)
+    allocation = strategies.gwr_allocation(
+        "C6", Dimensions(50, 50, 50, 50), 5, Allocation(0, 0, 0, 0)
+    )
+    assert allocation == Allocation(0, 0, 0, 5)
 
 
 def test_ai_shifts_credits_away_from_dominant_tourism() -> None:

@@ -75,6 +75,31 @@ These cause silent, hard-to-detect bugs if violated.
 - **Scores are computed server-side.** The leaderboard persists results the engine
   produced in that request; it never trusts a score value supplied by the client.
 
+## GWR planner contract
+
+The production AI planner is implemented in `riabita.strategies`. Keep the
+GWR coefficient matrix and planner contract there; do not create a separate
+top-level planner module.
+
+- `GWR_COEFFICIENTS` contains the supplied CArME profiles for 5, 10, 15, 20, 25,
+  and 30-minute bands. Every coefficient vector uses `(M, C, T, S)` order.
+- `temporal_band()` maps exact `A0` to 5 minutes. Numeric `A*`, `B*`, and `C*`
+  identifiers map suffixes `0–4` to the lower band and higher suffixes to the
+  upper band. Composite IDs, `Studio_*`, malformed IDs, and unknown IDs use the
+  documented fallback band 15.
+- District-aware `ai_allocation()` searches valid progressive turn allocations.
+  The authoritative game score is the primary objective; the dot product of
+  final dimensions and the active GWR vector is only the tie-break objective.
+- The planner uses the current AI dimensions and cumulative AI allocation, and
+  never receives the pending event. It uses five-credit candidates when the turn
+  budget is divisible by five and unit candidates for other valid partial budgets.
+- Do not change this into a one-shot 100-credit optimizer: the benchmark must
+  preserve progressive turns, shared-event fairness, deterministic output, and
+  step-mode queues.
+- `ui.views.render_gwr_profile()` displays the active band and coefficients in
+  both sidebar and main dashboard. All display text must resolve through the
+  Italian, English, and French catalogs.
+
 ## Clarify Before Guessing
 
 Stop and ask the user when a task requires any of these, which this skill
