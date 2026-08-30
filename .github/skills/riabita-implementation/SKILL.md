@@ -113,14 +113,16 @@ intentionally does not decide:
 
 ## CArME Rome data
 
-The repository includes `src/riabita/data/carme_indicators.csv` and the
-generated `src/riabita/data/carme_zones.geojson`. Regenerate the 35-feature map
-with `riabita.data.convert_csv_to_geojson.generate_carme_geojson()` after
-changing the table.
+The repository includes `src/riabita/data/carme_indicators.csv`, the real zone
+source in `docs/zone_carme/`, and the generated runtime map in
+`src/riabita/data/carme_zones.geojson`. Regenerate the 35-feature map with
+`riabita.data.convert_csv_to_geojson.generate_carme_geojson()` after changing
+the table or updating zone geometry.
 
-The converter anchors Velabro at `41.889, 12.482`, places zones with the
-supplied bearing/distance heuristics, and creates closed octagonal WGS84
-polygons. These are visualization approximations, not cadastral boundaries.
+Use the shapefile as the authoritative source for real district polygons when
+available; for composite or study-zone records without matching shapefile
+geometry, keep the CSV-derived fallback generation. The converter reprojects the
+shapefile to `EPSG:4326` and keeps the app’s schema contract unchanged.
 
 The CSV provides `Mean_RIz` and territorial indicators but no authoritative
 `M0`, `C0`, `T0`, and `S0` values. The converter derives proxy baselines and

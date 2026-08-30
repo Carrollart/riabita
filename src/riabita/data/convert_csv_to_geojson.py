@@ -14,6 +14,7 @@ import math
 from pathlib import Path
 from typing import Any
 
+import geopandas as gpd
 import pandas as pd
 
 ANCHOR_LATITUDE = 41.889
@@ -118,7 +119,31 @@ def _octagon(latitude: float, longitude: float, radius: float) -> list[list[floa
     return points
 
 
-def generate_carme_geojson(csv_path: str | Path, output_geojson_path: str | Path) -> dict[str, Any]:
+def _load_shape_for_ids(shapefile_path: str | Path) -> dict[str, dict[str, Any]]:
+    shape = gpd.read_file(shapefile_path)
+    if shape.crs is None:
+        raise ValueError(f"Shapefile {shapefile_path} has no CRS")
+    shape = shape.to_crs("EPSG:4326")
+    mapping: dict[str, dict[str, Any]] = {}
+    for _, row in shape.iterrows():
+        code = str(row.get("zc_code") or row.get("Zona_ID") or row.get("code_min") or "").strip()
+        if not code:
+            continue
+        name = str(row.get("nome") or row.get("Name") or row.get("NOME") or code).strip()
+        geometry = row.geometry.__geo_interface__ if row.geometry is not None else None
+        mapping[code] = {
+            "name": name,
+            "geometry": geometry,
+        }
+    return mapping
+
+
+def generate_carme_geojson(
+    csv_path: str | Path,
+    output_geojson_path: str | Path,
+    *,
+    shapefile_path: str | Path | None = None,
+) -> dict[str, Any]:
     """Convert ``csv_path`` and write a GeoJSON FeatureCollection."""
     frame = pd.read_csv(csv_path, keep_default_na=True)
     missing = REQUIRED_COLUMNS - set(frame.columns)
@@ -128,23 +153,36 @@ def generate_carme_geojson(csv_path: str | Path, output_geojson_path: str | Path
     if identifiers.eq("").any() or identifiers.duplicated().any():
         raise ValueError("CSV must contain unique, non-empty Zona_ID values")
 
+    shapefile_lookup = _load_shape_for_ids(shapefile_path) if shapefile_path else {}
+
     features: list[dict[str, Any]] = []
     for _, row in frame.iterrows():
         zona_id = str(row["Zona_ID"]).strip()
         latitude, longitude, radius = _centroid(zona_id)
         properties = {column: _json_value(row[column]) for column in frame.columns}
         properties.update(proxy_dimensions(row))
+        feature_name = str(row["Nome"]).strip()
+        payload_geometry = None
+        if zona_id in shapefile_lookup:
+            payload_geometry = shapefile_lookup[zona_id]["geometry"]
+            feature_name = shapefile_lookup[zona_id]["name"]
+            if "type" in payload_geometry and payload_geometry["type"] == "Feature":
+                payload_geometry = payload_geometry["geometry"]
         properties.update({
-            "nome": str(row["Nome"]).strip(),
+            "nome": feature_name,
             "baseline_source": "modeled_proxy",
             "centroid_lat": round(latitude, 5),
             "centroid_lon": round(longitude, 5),
         })
+        if payload_geometry is not None:
+            geometry = payload_geometry
+        else:
+            geometry = {"type": "Polygon", "coordinates": [_octagon(latitude, longitude, radius)]}
         features.append({
             "type": "Feature",
             "id": zona_id,
             "properties": properties,
-            "geometry": {"type": "Polygon", "coordinates": [_octagon(latitude, longitude, radius)]},
+            "geometry": geometry,
         })
 
     payload = {
@@ -153,7 +191,7 @@ def generate_carme_geojson(csv_path: str | Path, output_geojson_path: str | Path
         "metadata": {
             "source": str(Path(csv_path)),
             "baseline_source": "modeled_proxy",
-            "geometry_source": "heuristic_octagons",
+            "geometry_source": "shapefile" if shapefile_lookup else "heuristic_octagons",
             "crs": "EPSG:4326",
         },
         "features": features,
@@ -169,8 +207,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("csv_path", type=Path)
     parser.add_argument("output_geojson_path", type=Path)
+    parser.add_argument("--shapefile", type=Path, default=None, help="Optional shapefile source to replace the heuristic geometry with real zone polygons.")
     args = parser.parse_args()
-    payload = generate_carme_geojson(args.csv_path, args.output_geojson_path)
+    payload = generate_carme_geojson(args.csv_path, args.output_geojson_path, shapefile_path=args.shapefile)
     print(f"Generated {len(payload['features'])} CArME zones in {args.output_geojson_path}")
 
 

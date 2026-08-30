@@ -65,6 +65,17 @@ def test_proxy_dimensions_use_neutral_values_for_missing_inputs() -> None:
     assert all(value == 50.0 for value in dimensions.values())
 
 
+def test_shapefile_geometry_overrides_synthetic_zones(tmp_path: Path) -> None:
+    shapefile = Path(__file__).resolve().parents[1] / "docs" / "zone_carme" / "zone_carme.shp"
+    output = tmp_path / "carme_zones.geojson"
+
+    payload = generate_carme_geojson(CSV_PATH, output, shapefile_path=shapefile)
+
+    a1 = next(feature for feature in payload["features"] if feature["id"] == "A1")
+    assert "e dintorni" in a1["properties"]["nome"]
+    assert a1["geometry"]["coordinates"][0][0][0] != pytest.approx(12.482, abs=1e-6)
+
+
 def test_converter_rejects_duplicate_zone_ids(tmp_path: Path) -> None:
     source = tmp_path / "zones.csv"
     pd.DataFrame(
