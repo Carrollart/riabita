@@ -16,3 +16,21 @@
 - Run the narrowest relevant test, lint, format, or type-check command after editing.
 - Report what was validated and call out checks that were unavailable or not configured.
 - Keep generated files, caches, credentials, and local environment files out of source control.
+
+## CArME data integration
+
+- Use `src/riabita/data/carme_indicators.csv` as the CArME source and
+	`src/riabita/data/carme_zones.geojson` as generated spatial output.
+- Regenerate the map with `riabita.data.convert_csv_to_geojson` after changing
+	the CSV; do not hand-edit the generated GeoJSON.
+- The converter preserves source indicators and emits 35 WGS84 Polygon features
+	with `M0`, `C0`, `T0`, `S0`, centroid fields, and `baseline_source`.
+- The source contains aggregate `Mean_RIz`, not the four simulator baselines.
+	Generated dimensions are transparent `modeled_proxy` estimates, not official
+	research measurements.
+- Velabro-centered bearing/distance polygons are heuristic visualizations, not
+	cadastral boundaries. Keep coordinates in `[longitude, latitude]` order and
+	close every polygon ring.
+- `config.get_settings()` uses the generated map by default,
+	`RIABITA_DISTRICTS_PATH` overrides it, and `load_districts()` retains demo
+	fallback behavior. Keep CArME parsing outside the simulation engine.

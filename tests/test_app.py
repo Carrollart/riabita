@@ -81,6 +81,14 @@ def test_comparison_can_include_the_best_saved_player_score() -> None:
     assert "72.4" in bar.text
 
 
+def test_selection_map_contains_loaded_district_geometries() -> None:
+    catalog = state.load_catalog(str(config.DEFAULT_CARME_GEOJSON_PATH))
+    figure = charts.build_selection_map(catalog.districts)
+
+    assert len(figure.data) == 1
+    assert len(figure.data[0].locations) == 35
+
+
 def test_charts_do_not_import_streamlit() -> None:
     import inspect
 
@@ -132,9 +140,10 @@ def test_direct_entry_point_explains_streamlit_command() -> None:
     assert ".venv/bin/python -m streamlit run src/main.py" in result.stdout
 
 
-def test_demo_notice_is_shown() -> None:
+def test_generated_carme_data_is_used_by_default() -> None:
     app = run_app()
-    assert any(i18n.t("data.demo_notice", "it") in info.value for info in app.info)
+    assert not any(i18n.t("data.demo_notice", "it") in info.value for info in app.info)
+    assert len(district_selectbox(app).options) == 35
 
 
 def test_turn_is_disabled_until_at_least_one_credit_is_allocated() -> None:

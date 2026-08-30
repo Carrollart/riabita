@@ -24,7 +24,10 @@ src/
     ├── strategies.py            AI and random benchmark allocations
     ├── data/
     │   ├── loader.py            GeoJSON loading, validation, demo fallback
-    │   └── demo_districts.geojson
+      │   ├── convert_csv_to_geojson.py  CArME CSV conversion CLI
+      │   ├── carme_indicators.csv       CArME tabular source
+      │   ├── carme_zones.geojson        generated CArME map
+      │   └── demo_districts.geojson
     ├── leaderboard/
     │   ├── models.py            SQLAlchemy ORM mapping
     │   ├── repository.py        Repository protocol and implementations
@@ -63,9 +66,10 @@ Enforced rules:
 
 - `domain/` and `engine/` import only the standard library, `numpy`, and `config`.
   They must not import Streamlit, GeoPandas, Plotly, or SQLAlchemy (REQ-038).
-- `data/loader.py` is the only module that touches the filesystem. It parses
-  GeoJSON with the standard library and imports GeoPandas only to reproject a
-  non-EPSG:4326 file, so the optional `geo` extra stays optional.
+- `data/loader.py` is the runtime GeoJSON reader. The offline CArME converter
+  reads the CSV and writes GeoJSON; it is not called by Streamlit reruns.
+  Runtime GeoJSON parsing uses the standard library and imports GeoPandas only
+  to reproject a non-EPSG:4326 file, so the optional `geo` extra stays optional.
 - `leaderboard/repository.py` is the only module that issues queries (REQ-068).
 - `ui/` is the only module that calls Streamlit.
 - `main.py` wires modules together and contains no game logic.
@@ -164,7 +168,7 @@ secrets. Never commit values or log them (REQ-069).
 | Variable | Purpose | Default |
 |---|---|---|
 | `RIABITA_DATABASE_URL` | SQLAlchemy URL for SQLite or PostgreSQL | project-local `.data/riabita.sqlite3` |
-| `RIABITA_DISTRICTS_PATH` | Official GeoJSON path | unset; demo data used |
+| `RIABITA_DISTRICTS_PATH` | District GeoJSON override | generated CArME GeoJSON when present; otherwise demo data |
 | `RIABITA_DEFAULT_LANGUAGE` | `it`, `en`, or `fr` | `it` |
 | `RIABITA_LEADERBOARD_LIMIT` | Rows displayed | `10` |
 

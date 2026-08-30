@@ -8,7 +8,7 @@ import streamlit as st
 from riabita import config, i18n
 from riabita.data.loader import DistrictCatalog
 from riabita.domain.errors import LeaderboardUnavailable
-from riabita.domain.models import Allocation, District, SimulationResult
+from riabita.domain.models import District, SimulationResult
 from riabita.domain.validation import (
     RULE_ALLOCATION_EXCEEDS_REMAINING,
     validate_turn_allocation,
@@ -370,6 +370,15 @@ def render_map(district: District, lang: str) -> None:
         st.caption(i18n.t("map.unavailable", lang))
         return
     st.map(pd.DataFrame(points, columns=["lon", "lat"]), zoom=12)
+
+
+def render_selection_map(catalog: DistrictCatalog, lang: str) -> None:
+    """Show the generated CArME zone map alongside the district picker."""
+    st.subheader(i18n.t("map.overview_header", lang))
+    if not any(d.geometry for d in catalog.districts):
+        st.caption(i18n.t("map.overview_unavailable", lang))
+        return
+    st.plotly_chart(charts.build_selection_map(catalog.districts), width="stretch")
 
 
 def _boundary_points(geometry: dict) -> list[tuple[float, float]]:

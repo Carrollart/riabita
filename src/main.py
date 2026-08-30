@@ -45,6 +45,7 @@ def main() -> None:
     st.caption(i18n.t("app.tagline", lang))
 
     catalog = state.load_catalog(settings.districts_path)
+    views.render_selection_map(catalog, lang)
     district = views.render_district_picker(catalog, lang)
     state.select_district(district.district_id)
     views.render_budget_controls(district, lang)

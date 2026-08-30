@@ -4,6 +4,26 @@ Geospatial loading, localization, layout, charts, and accessibility.
 
 ## District data
 
+### CArME source and generated map
+
+The CArME table is `src/riabita/data/carme_indicators.csv`. Generate
+`src/riabita/data/carme_zones.geojson` with:
+
+```text
+PYTHONPATH=src .venv/bin/python -m riabita.data.convert_csv_to_geojson src/riabita/data/carme_indicators.csv src/riabita/data/carme_zones.geojson
+```
+
+The converter emits 35 WGS84 Polygon features, preserves the source indicators,
+and adds `M0`, `C0`, `T0`, `S0`, `nome`, centroid coordinates, and
+`baseline_source`. Because the table contains `Mean_RIz` rather than the four
+dimension baselines, generated dimensions are modeled proxy estimates. Keep
+that caveat visible in research and product documentation.
+
+The Velabro anchor is latitude `41.889`, longitude `12.482`. Bearings, walking
+distances, and polygon radii follow the supplied spatial-modeling brief. Each
+generated octagon is a visualization approximation, not an authoritative
+cadastral boundary.
+
 ### Schema
 
 Each GeoJSON feature must carry these properties:
@@ -19,8 +39,9 @@ derive a stable `district_id` by slugifying `nome` when `id` is absent.
 ### Loading order
 
 1. If `RIABITA_DISTRICTS_PATH` is set, read that file.
-2. Validate the schema. Drop individual features that fail validation and record why.
-3. If the path is unset, unreadable, malformed, or yields zero valid features, load
+2. Otherwise, use the generated CArME GeoJSON when it exists.
+3. Validate the schema. Drop individual features that fail validation and record why.
+4. If the selected path is unset, unreadable, malformed, or yields zero valid features, load
    the bundled `data/demo_districts.geojson` and mark every district `is_demo=True`
    (REQ-013).
 

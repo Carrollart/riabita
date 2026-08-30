@@ -1,0 +1,2812 @@
+{
+  "type": "FeatureCollection",
+  "name": "carme_zones",
+  "metadata": {
+    "source": "src/riabita/data/carme_indicators.csv",
+    "baseline_source": "modeled_proxy",
+    "geometry_source": "heuristic_octagons",
+    "crs": "EPSG:4326"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "A0",
+      "properties": {
+        "Zona_ID": "A0",
+        "Nome": "Area archeologica centrale (Velabro)",
+        "Fascia": "Centro",
+        "Mean_RIz": 0.71,
+        "Classe": "Alta",
+        "Popolazione_Residente": 1084.0,
+        "Quota_Giovani_Pct": 11.0,
+        "Quota_Anziani_Pct": 25.0,
+        "Quota_Stranieri_Pct": 14.0,
+        "Quota_Laureati_Pct": 3.1,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": 3.2,
+        "Abitazioni_Residenziali": 320.0,
+        "Numero_Edifici": 126.0,
+        "Edifici_Abitativi_Pct": 47.0,
+        "Edifici_Servizi_Pubblici_Pct": 16.7,
+        "Edifici_Scolastici_Universitari_Biblioteche": 0.0,
+        "Edifici_Attivita_Culturali": 13.0,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": 2.4,
+        "Spettacoli_Totali_Media_Giornaliera": 2.6,
+        "Posti_Letto_Turistici": 886.0,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": 82.0,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 13.275,
+        "T0": 91.0,
+        "S0": 60.4,
+        "nome": "Area archeologica centrale (Velabro)",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.889,
+        "centroid_lon": 12.482
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.482,
+              41.89124577793748
+            ],
+            [
+              12.484133154247457,
+              41.890588004808635
+            ],
+            [
+              12.485016735667386,
+              41.889
+            ],
+            [
+              12.484133154247457,
+              41.88741199519137
+            ],
+            [
+              12.482,
+              41.88675422206253
+            ],
+            [
+              12.479866845752541,
+              41.88741199519137
+            ],
+            [
+              12.478983264332612,
+              41.889
+            ],
+            [
+              12.479866845752541,
+              41.890588004808635
+            ],
+            [
+              12.482,
+              41.89124577793748
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "A1B1",
+      "properties": {
+        "Zona_ID": "A1B1",
+        "Nome": "Rioni Sant'Angelo e Regola",
+        "Fascia": "1a-2a fascia",
+        "Mean_RIz": 0.54,
+        "Classe": "Alta/Media",
+        "Popolazione_Residente": 5012.0,
+        "Quota_Giovani_Pct": 17.0,
+        "Quota_Anziani_Pct": 28.0,
+        "Quota_Stranieri_Pct": 5.5,
+        "Quota_Laureati_Pct": 33.0,
+        "Tasso_Occupazione_Pct": 55.0,
+        "Dimensione_Media_Famiglia": 1.9,
+        "Abitazioni_Residenziali": 2567.0,
+        "Numero_Edifici": 171.0,
+        "Edifici_Abitativi_Pct": 56.0,
+        "Edifici_Servizi_Pubblici_Pct": 10.5,
+        "Edifici_Scolastici_Universitari_Biblioteche": 2.0,
+        "Edifici_Attivita_Culturali": 9.0,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": 9.1,
+        "Spettacoli_Totali_Media_Giornaliera": 13.2,
+        "Posti_Letto_Turistici": 5493.0,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": 110.0,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": 38.0,
+        "M0": 55.0,
+        "C0": 49.75,
+        "T0": 88.0,
+        "S0": 57.2,
+        "nome": "Rioni Sant'Angelo e Regola",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.88963,
+        "centroid_lon": 12.47238
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.472383180552331,
+              41.893668744108865
+            ],
+            [
+              12.476222895845321,
+              41.89248475247694
+            ],
+            [
+              12.47781335799533,
+              41.889626343821405
+            ],
+            [
+              12.476222895845321,
+              41.88676793516587
+            ],
+            [
+              12.472383180552331,
+              41.885583943533945
+            ],
+            [
+              12.46854346525934,
+              41.88676793516587
+            ],
+            [
+              12.466953003109332,
+              41.889626343821405
+            ],
+            [
+              12.46854346525934,
+              41.89248475247694
+            ],
+            [
+              12.472383180552331,
+              41.893668744108865
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "A2B2",
+      "properties": {
+        "Zona_ID": "A2B2",
+        "Nome": "Rioni Pigna, Parione, Sant'Eustachio, Colonna",
+        "Fascia": "1a-2a fascia",
+        "Mean_RIz": 0.47,
+        "Classe": "Alta/Media",
+        "Popolazione_Residente": 4472.0,
+        "Quota_Giovani_Pct": 18.0,
+        "Quota_Anziani_Pct": 26.0,
+        "Quota_Stranieri_Pct": 6.6,
+        "Quota_Laureati_Pct": 36.0,
+        "Tasso_Occupazione_Pct": 57.0,
+        "Dimensione_Media_Famiglia": 1.9,
+        "Abitazioni_Residenziali": 2261.0,
+        "Numero_Edifici": 128.0,
+        "Edifici_Abitativi_Pct": 52.0,
+        "Edifici_Servizi_Pubblici_Pct": 20.3,
+        "Edifici_Scolastici_Universitari_Biblioteche": 10.0,
+        "Edifici_Attivita_Culturali": 10.0,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": 2.1,
+        "Spettacoli_Totali_Media_Giornaliera": 5.0,
+        "Posti_Letto_Turistici": 5821.0,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": 130.0,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": 37.0,
+        "M0": 57.0,
+        "C0": 23.0,
+        "T0": 87.0,
+        "S0": 57.98,
+        "nome": "Rioni Pigna, Parione, Sant'Eustachio, Colonna",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.89411,
+        "centroid_lon": 12.47438
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.47437763689642,
+              41.898151644047836
+            ],
+            [
+              12.478217621677452,
+              41.89696765241591
+            ],
+            [
+              12.479808195453062,
+              41.894109243760376
+            ],
+            [
+              12.478217621677452,
+              41.89125083510484
+            ],
+            [
+              12.47437763689642,
+              41.890066843472916
+            ],
+            [
+              12.47053765211539,
+              41.89125083510484
+            ],
+            [
+              12.468947078339779,
+              41.894109243760376
+            ],
+            [
+              12.47053765211539,
+              41.89696765241591
+            ],
+            [
+              12.47437763689642,
+              41.898151644047836
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "A3B3",
+      "properties": {
+        "Zona_ID": "A3B3",
+        "Nome": "Rione Trevi",
+        "Fascia": "1a-2a fascia",
+        "Mean_RIz": 0.515,
+        "Classe": "Alta/Media",
+        "Popolazione_Residente": 2035.0,
+        "Quota_Giovani_Pct": 15.0,
+        "Quota_Anziani_Pct": 30.0,
+        "Quota_Stranieri_Pct": 11.0,
+        "Quota_Laureati_Pct": 37.0,
+        "Tasso_Occupazione_Pct": 55.0,
+        "Dimensione_Media_Famiglia": 2.0,
+        "Abitazioni_Residenziali": 974.0,
+        "Numero_Edifici": 127.0,
+        "Edifici_Abitativi_Pct": 60.0,
+        "Edifici_Servizi_Pubblici_Pct": 18.9,
+        "Edifici_Scolastici_Universitari_Biblioteche": 5.0,
+        "Edifici_Attivita_Culturali": 3.0,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": 3.8,
+        "Spettacoli_Totali_Media_Giornaliera": 19.4,
+        "Posti_Letto_Turistici": 5296.0,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": 260.0,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": 52.0,
+        "M0": 55.0,
+        "C0": 43.75,
+        "T0": 100.0,
+        "S0": 55.8,
+        "nome": "Rione Trevi",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.8958,
+        "centroid_lon": 12.48666
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.486656535732946,
+              41.89984580978764
+            ],
+            [
+              12.49049662237416,
+              41.898661818155716
+            ],
+            [
+              12.492087238341638,
+              41.89580340950018
+            ],
+            [
+              12.49049662237416,
+              41.89294500084465
+            ],
+            [
+              12.486656535732946,
+              41.89176100921272
+            ],
+            [
+              12.482816449091732,
+              41.89294500084465
+            ],
+            [
+              12.481225833124254,
+              41.89580340950018
+            ],
+            [
+              12.482816449091732,
+              41.898661818155716
+            ],
+            [
+              12.486656535732946,
+              41.89984580978764
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "A10",
+      "properties": {
+        "Zona_ID": "A10",
+        "Nome": "Rione Trastevere 1a fascia",
+        "Fascia": "1a fascia",
+        "Mean_RIz": 0.18,
+        "Classe": "Bassa",
+        "Popolazione_Residente": 3323.0,
+        "Quota_Giovani_Pct": 17.0,
+        "Quota_Anziani_Pct": 28.0,
+        "Quota_Stranieri_Pct": 4.9,
+        "Quota_Laureati_Pct": 34.0,
+        "Tasso_Occupazione_Pct": 58.0,
+        "Dimensione_Media_Famiglia": 1.7,
+        "Abitazioni_Residenziali": 1818.0,
+        "Numero_Edifici": 128.0,
+        "Edifici_Abitativi_Pct": 67.0,
+        "Edifici_Servizi_Pubblici_Pct": 11.7,
+        "Edifici_Scolastici_Universitari_Biblioteche": 4.0,
+        "Edifici_Attivita_Culturali": 7.0,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": 1.2,
+        "Spettacoli_Totali_Media_Giornaliera": 2.3,
+        "Posti_Letto_Turistici": 2238.0,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": 67.0,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": 29.0,
+        "M0": 58.0,
+        "C0": 16.125,
+        "T0": 62.5,
+        "S0": 56.92,
+        "nome": "Rione Trastevere 1a fascia",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.88563,
+        "centroid_lon": 12.47416
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.474162290826618,
+              41.888326266618755
+            ],
+            [
+              12.476721940950567,
+              41.88753693886414
+            ],
+            [
+              12.477782182746838,
+              41.885631333093784
+            ],
+            [
+              12.476721940950567,
+              41.88372572732343
+            ],
+            [
+              12.474162290826618,
+              41.88293639956881
+            ],
+            [
+              12.471602640702669,
+              41.88372572732343
+            ],
+            [
+              12.470542398906398,
+              41.885631333093784
+            ],
+            [
+              12.471602640702669,
+              41.88753693886414
+            ],
+            [
+              12.474162290826618,
+              41.888326266618755
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "Studio_1",
+      "properties": {
+        "Zona_ID": "Studio_1",
+        "Nome": "Zona di Studio 1 (Centro Storico)",
+        "Fascia": "Fascia mista",
+        "Mean_RIz": null,
+        "Classe": "Alta",
+        "Popolazione_Residente": 7775.0,
+        "Quota_Giovani_Pct": 16.0,
+        "Quota_Anziani_Pct": 27.0,
+        "Quota_Stranieri_Pct": 5.0,
+        "Quota_Laureati_Pct": 38.0,
+        "Tasso_Occupazione_Pct": 59.0,
+        "Dimensione_Media_Famiglia": 1.8,
+        "Abitazioni_Residenziali": 4146.0,
+        "Numero_Edifici": 189.0,
+        "Edifici_Abitativi_Pct": 69.0,
+        "Edifici_Servizi_Pubblici_Pct": 11.6,
+        "Edifici_Scolastici_Universitari_Biblioteche": 12.0,
+        "Edifici_Attivita_Culturali": 4.0,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": 1.0,
+        "Spettacoli_Totali_Media_Giornaliera": 3.1,
+        "Posti_Letto_Turistici": 12183.0,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": 157.0,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": 37.0,
+        "M0": 59.0,
+        "C0": 16.875,
+        "T0": 87.0,
+        "S0": 57.6,
+        "nome": "Zona di Studio 1 (Centro Storico)",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.90242,
+        "centroid_lon": 12.48358
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.483577555026587,
+              41.906465792733904
+            ],
+            [
+              12.487418039772297,
+              41.90528180110198
+            ],
+            [
+              12.489008820640057,
+              41.902423392446444
+            ],
+            [
+              12.487418039772297,
+              41.89956498379091
+            ],
+            [
+              12.483577555026587,
+              41.898380992158984
+            ],
+            [
+              12.479737070280876,
+              41.89956498379091
+            ],
+            [
+              12.478146289413116,
+              41.902423392446444
+            ],
+            [
+              12.479737070280876,
+              41.90528180110198
+            ],
+            [
+              12.483577555026587,
+              41.906465792733904
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "Studio_2",
+      "properties": {
+        "Zona_ID": "Studio_2",
+        "Nome": "Zona di Studio 2 (Centro Storico)",
+        "Fascia": "Fascia mista",
+        "Mean_RIz": null,
+        "Classe": "Alta",
+        "Popolazione_Residente": 13771.0,
+        "Quota_Giovani_Pct": 20.0,
+        "Quota_Anziani_Pct": 22.0,
+        "Quota_Stranieri_Pct": 2.8,
+        "Quota_Laureati_Pct": 32.0,
+        "Tasso_Occupazione_Pct": 60.0,
+        "Dimensione_Media_Famiglia": 1.9,
+        "Abitazioni_Residenziali": 7193.0,
+        "Numero_Edifici": 126.0,
+        "Edifici_Abitativi_Pct": 79.0,
+        "Edifici_Servizi_Pubblici_Pct": 10.3,
+        "Edifici_Scolastici_Universitari_Biblioteche": 7.0,
+        "Edifici_Attivita_Culturali": 2.0,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": 1.7,
+        "Spettacoli_Totali_Media_Giornaliera": 2.9,
+        "Posti_Letto_Turistici": 10765.0,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": 78.0,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": 18.0,
+        "M0": 60.0,
+        "C0": 16.375,
+        "T0": 57.0,
+        "S0": 60.54,
+        "nome": "Zona di Studio 2 (Centro Storico)",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.89203,
+        "centroid_lon": 12.49964
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.499636501566036,
+              41.89607354097661
+            ],
+            [
+              12.503476361414966,
+              41.89488954934468
+            ],
+            [
+              12.505066883442005,
+              41.89203114068915
+            ],
+            [
+              12.503476361414966,
+              41.889172732033614
+            ],
+            [
+              12.499636501566036,
+              41.88798874040169
+            ],
+            [
+              12.495796641717105,
+              41.889172732033614
+            ],
+            [
+              12.494206119690066,
+              41.89203114068915
+            ],
+            [
+              12.495796641717105,
+              41.89488954934468
+            ],
+            [
+              12.499636501566036,
+              41.89607354097661
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "Studio_3",
+      "properties": {
+        "Zona_ID": "Studio_3",
+        "Nome": "Zona di Studio 3 (Centro Storico)",
+        "Fascia": "Fascia mista",
+        "Mean_RIz": null,
+        "Classe": "Media",
+        "Popolazione_Residente": 9775.0,
+        "Quota_Giovani_Pct": 18.0,
+        "Quota_Anziani_Pct": 28.0,
+        "Quota_Stranieri_Pct": 4.1,
+        "Quota_Laureati_Pct": 38.0,
+        "Tasso_Occupazione_Pct": 60.0,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": 4914.0,
+        "Numero_Edifici": 346.0,
+        "Edifici_Abitativi_Pct": 66.0,
+        "Edifici_Servizi_Pubblici_Pct": 25.1,
+        "Edifici_Scolastici_Universitari_Biblioteche": 5.0,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": 0.5,
+        "Spettacoli_Totali_Media_Giornaliera": 0.9,
+        "Posti_Letto_Turistici": 3507.0,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": 36.0,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 60.0,
+        "C0": 24.375,
+        "T0": 68.0,
+        "S0": 69.18,
+        "nome": "Zona di Studio 3 (Centro Storico)",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.87745,
+        "centroid_lon": 12.49132
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.491322402383863,
+              41.8814923558116
+            ],
+            [
+              12.495161386006771,
+              41.880308364179676
+            ],
+            [
+              12.496751545089106,
+              41.87744995552414
+            ],
+            [
+              12.495161386006771,
+              41.87459154686861
+            ],
+            [
+              12.491322402383863,
+              41.87340755523668
+            ],
+            [
+              12.487483418760956,
+              41.87459154686861
+            ],
+            [
+              12.48589325967862,
+              41.87744995552414
+            ],
+            [
+              12.487483418760956,
+              41.880308364179676
+            ],
+            [
+              12.491322402383863,
+              41.8814923558116
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "Studio_4",
+      "properties": {
+        "Zona_ID": "Studio_4",
+        "Nome": "Zona di Studio 4 (Centro Storico)",
+        "Fascia": "Fascia mista",
+        "Mean_RIz": null,
+        "Classe": "Media",
+        "Popolazione_Residente": 4614.0,
+        "Quota_Giovani_Pct": 19.0,
+        "Quota_Anziani_Pct": 26.0,
+        "Quota_Stranieri_Pct": 5.6,
+        "Quota_Laureati_Pct": 33.0,
+        "Tasso_Occupazione_Pct": 56.0,
+        "Dimensione_Media_Famiglia": 2.0,
+        "Abitazioni_Residenziali": 2251.0,
+        "Numero_Edifici": 370.0,
+        "Edifici_Abitativi_Pct": 96.0,
+        "Edifici_Servizi_Pubblici_Pct": 1.4,
+        "Edifici_Scolastici_Universitari_Biblioteche": 3.0,
+        "Edifici_Attivita_Culturali": 1.0,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": 2.5,
+        "Spettacoli_Totali_Media_Giornaliera": 4.2,
+        "Posti_Letto_Turistici": 337.0,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": 7.0,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": 4.0,
+        "M0": 56.0,
+        "C0": 20.0,
+        "T0": 7.5,
+        "S0": 58.68,
+        "nome": "Zona di Studio 4 (Centro Storico)",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.87883,
+        "centroid_lon": 12.47013
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.470125059963994,
+              41.88287293954066
+            ],
+            [
+              12.473964126522416,
+              41.881688947908735
+            ],
+            [
+              12.475554319957768,
+              41.8788305392532
+            ],
+            [
+              12.473964126522416,
+              41.87597213059767
+            ],
+            [
+              12.470125059963994,
+              41.87478813896574
+            ],
+            [
+              12.466285993405572,
+              41.87597213059767
+            ],
+            [
+              12.46469579997022,
+              41.8788305392532
+            ],
+            [
+              12.466285993405572,
+              41.881688947908735
+            ],
+            [
+              12.470125059963994,
+              41.88287293954066
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "Studio_5",
+      "properties": {
+        "Zona_ID": "Studio_5",
+        "Nome": "Zona di Studio 5 (Centro Storico)",
+        "Fascia": "Fascia mista",
+        "Mean_RIz": null,
+        "Classe": "Bassa",
+        "Popolazione_Residente": 3693.0,
+        "Quota_Giovani_Pct": 19.0,
+        "Quota_Anziani_Pct": 26.0,
+        "Quota_Stranieri_Pct": 5.3,
+        "Quota_Laureati_Pct": 35.0,
+        "Tasso_Occupazione_Pct": 57.0,
+        "Dimensione_Media_Famiglia": 2.1,
+        "Abitazioni_Residenziali": 1719.0,
+        "Numero_Edifici": 227.0,
+        "Edifici_Abitativi_Pct": 93.0,
+        "Edifici_Servizi_Pubblici_Pct": 1.8,
+        "Edifici_Scolastici_Universitari_Biblioteche": 2.0,
+        "Edifici_Attivita_Culturali": 1.0,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": 0.2,
+        "Spettacoli_Totali_Media_Giornaliera": 0.3,
+        "Posti_Letto_Turistici": 869.0,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": 24.0,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": 6.0,
+        "M0": 57.0,
+        "C0": 9.875,
+        "T0": 18.0,
+        "S0": 59.44,
+        "nome": "Zona di Studio 5 (Centro Storico)",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.89426,
+        "centroid_lon": 12.46534
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.465338481059517,
+              41.898307372374546
+            ],
+            [
+              12.469178475203208,
+              41.89712338074262
+            ],
+            [
+              12.470769052856959,
+              41.894264972087086
+            ],
+            [
+              12.469178475203208,
+              41.89140656343155
+            ],
+            [
+              12.465338481059517,
+              41.890222571799626
+            ],
+            [
+              12.461498486915826,
+              41.89140656343155
+            ],
+            [
+              12.459907909262075,
+              41.894264972087086
+            ],
+            [
+              12.461498486915826,
+              41.89712338074262
+            ],
+            [
+              12.465338481059517,
+              41.898307372374546
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "A1",
+      "properties": {
+        "Zona_ID": "A1",
+        "Nome": "Rione Sant'Angelo",
+        "Fascia": "1a fascia",
+        "Mean_RIz": 0.69,
+        "Classe": "Alta",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Rione Sant'Angelo",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.889,
+        "centroid_lon": 12.47536
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.475363181531746,
+              41.891694933524974
+            ],
+            [
+              12.477922966628695,
+              41.89090560577036
+            ],
+            [
+              12.478983264332612,
+              41.889
+            ],
+            [
+              12.477922966628695,
+              41.88709439422965
+            ],
+            [
+              12.475363181531746,
+              41.88630506647503
+            ],
+            [
+              12.472803396434797,
+              41.88709439422965
+            ],
+            [
+              12.47174309873088,
+              41.889
+            ],
+            [
+              12.472803396434797,
+              41.89090560577036
+            ],
+            [
+              12.475363181531746,
+              41.891694933524974
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "A2",
+      "properties": {
+        "Zona_ID": "A2",
+        "Nome": "Rione Pigna",
+        "Fascia": "1a fascia",
+        "Mean_RIz": 0.53,
+        "Classe": "Alta",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Rione Pigna",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.89249,
+        "centroid_lon": 12.47731
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.477307060655594,
+              41.89518854410396
+            ],
+            [
+              12.479866985756068,
+              41.89439921634934
+            ],
+            [
+              12.480927341451343,
+              41.89249361057899
+            ],
+            [
+              12.479866985756068,
+              41.890588004808635
+            ],
+            [
+              12.477307060655594,
+              41.88979867705402
+            ],
+            [
+              12.47474713555512,
+              41.890588004808635
+            ],
+            [
+              12.473686779859845,
+              41.89249361057899
+            ],
+            [
+              12.47474713555512,
+              41.89439921634934
+            ],
+            [
+              12.477307060655594,
+              41.89518854410396
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "A3",
+      "properties": {
+        "Zona_ID": "A3",
+        "Nome": "Rione Trevi sud",
+        "Fascia": "1a fascia",
+        "Mean_RIz": 0.55,
+        "Classe": "Alta",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Rione Trevi sud",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.89328,
+        "centroid_lon": 12.48532
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.485318409234125,
+              41.895973715164224
+            ],
+            [
+              12.487878365803091,
+              41.89518438740961
+            ],
+            [
+              12.488938734533043,
+              41.89327878163925
+            ],
+            [
+              12.487878365803091,
+              41.8913731758689
+            ],
+            [
+              12.485318409234125,
+              41.89058384811428
+            ],
+            [
+              12.48275845266516,
+              41.8913731758689
+            ],
+            [
+              12.481698083935207,
+              41.89327878163925
+            ],
+            [
+              12.48275845266516,
+              41.89518438740961
+            ],
+            [
+              12.485318409234125,
+              41.895973715164224
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "A4",
+      "properties": {
+        "Zona_ID": "A4",
+        "Nome": "Monti nord 1a fascia",
+        "Fascia": "1a fascia",
+        "Mean_RIz": 0.62,
+        "Classe": "Alta",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Monti nord 1a fascia",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.89051,
+        "centroid_lon": 12.48958
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.489576251519765,
+              41.89320618378833
+            ],
+            [
+              12.492136097175758,
+              41.89241685603371
+            ],
+            [
+              12.493196419964052,
+              41.89051125026336
+            ],
+            [
+              12.492136097175758,
+              41.888605644493005
+            ],
+            [
+              12.489576251519765,
+              41.88781631673839
+            ],
+            [
+              12.487016405863772,
+              41.888605644493005
+            ],
+            [
+              12.485956083075477,
+              41.89051125026336
+            ],
+            [
+              12.487016405863772,
+              41.89241685603371
+            ],
+            [
+              12.489576251519765,
+              41.89320618378833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "A6",
+      "properties": {
+        "Zona_ID": "A6",
+        "Nome": "Monti sud-Esquilino",
+        "Fascia": "1a fascia",
+        "Mean_RIz": 0.66,
+        "Classe": "Alta",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Monti sud-Esquilino",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.88799,
+        "centroid_lon": 12.48972
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.489724352152482,
+              41.89068099788463
+            ],
+            [
+              12.492284096621455,
+              41.88989167013001
+            ],
+            [
+              12.493344377496715,
+              41.88798606435966
+            ],
+            [
+              12.492284096621455,
+              41.886080458589305
+            ],
+            [
+              12.489724352152482,
+              41.88529113083469
+            ],
+            [
+              12.487164607683509,
+              41.886080458589305
+            ],
+            [
+              12.486104326808249,
+              41.88798606435966
+            ],
+            [
+              12.487164607683509,
+              41.88989167013001
+            ],
+            [
+              12.489724352152482,
+              41.89068099788463
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "A7",
+      "properties": {
+        "Zona_ID": "A7",
+        "Nome": "Rione Celio",
+        "Fascia": "1a fascia",
+        "Mean_RIz": 0.47,
+        "Classe": "Media",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Rione Celio",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.88487,
+        "centroid_lon": 12.48755
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.487546201043388,
+              41.88756612102254
+            ],
+            [
+              12.490105820713636,
+              41.88677679326792
+            ],
+            [
+              12.49116604989557,
+              41.884871187497566
+            ],
+            [
+              12.490105820713636,
+              41.88296558172721
+            ],
+            [
+              12.487546201043388,
+              41.882176253972595
+            ],
+            [
+              12.48498658137314,
+              41.88296558172721
+            ],
+            [
+              12.483926352191206,
+              41.884871187497566
+            ],
+            [
+              12.48498658137314,
+              41.88677679326792
+            ],
+            [
+              12.487546201043388,
+              41.88756612102254
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "A8",
+      "properties": {
+        "Zona_ID": "A8",
+        "Nome": "Rione San Saba",
+        "Fascia": "1a fascia",
+        "Mean_RIz": 0.23,
+        "Classe": "Bassa",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Rione San Saba",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.88181,
+        "centroid_lon": 12.482
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.482,
+              41.884508444125046
+            ],
+            [
+              12.484559497182453,
+              41.88371911637043
+            ],
+            [
+              12.48561967562828,
+              41.881813510600075
+            ],
+            [
+              12.484559497182453,
+              41.87990790482972
+            ],
+            [
+              12.482,
+              41.879118577075104
+            ],
+            [
+              12.479440502817546,
+              41.87990790482972
+            ],
+            [
+              12.478380324371718,
+              41.881813510600075
+            ],
+            [
+              12.479440502817546,
+              41.88371911637043
+            ],
+            [
+              12.482,
+              41.884508444125046
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "A9",
+      "properties": {
+        "Zona_ID": "A9",
+        "Nome": "Ripa-Aventino 1a fascia",
+        "Fascia": "1a fascia",
+        "Mean_RIz": 0.23,
+        "Classe": "Bassa",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Ripa-Aventino 1a fascia",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.88394,
+        "centroid_lon": 12.47808
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.478078243632394,
+              41.88663819158768
+            ],
+            [
+              12.48063782612861,
+              41.88584886383306
+            ],
+            [
+              12.481698039912557,
+              41.88394325806271
+            ],
+            [
+              12.48063782612861,
+              41.882037652292354
+            ],
+            [
+              12.478078243632394,
+              41.88124832453774
+            ],
+            [
+              12.475518661136178,
+              41.882037652292354
+            ],
+            [
+              12.474458447352232,
+              41.88394325806271
+            ],
+            [
+              12.475518661136178,
+              41.88584886383306
+            ],
+            [
+              12.478078243632394,
+              41.88663819158768
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "B1",
+      "properties": {
+        "Zona_ID": "B1",
+        "Nome": "Rione Regola",
+        "Fascia": "2a fascia",
+        "Mean_RIz": 0.39,
+        "Classe": "Media",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Rione Regola",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.89072,
+        "centroid_lon": 12.46893
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.468928019434259,
+              41.89430913578363
+            ],
+            [
+              12.472341157909922,
+              41.89325669877747
+            ],
+            [
+              12.473754926156799,
+              41.890715891083666
+            ],
+            [
+              12.472341157909922,
+              41.88817508338986
+            ],
+            [
+              12.468928019434259,
+              41.8871226463837
+            ],
+            [
+              12.465514880958596,
+              41.88817508338986
+            ],
+            [
+              12.464101112711718,
+              41.890715891083666
+            ],
+            [
+              12.465514880958596,
+              41.89325669877747
+            ],
+            [
+              12.468928019434259,
+              41.89430913578363
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "B2",
+      "properties": {
+        "Zona_ID": "B2",
+        "Nome": "Parione-Sant'Eustachio-Colonna",
+        "Fascia": "2a fascia",
+        "Mean_RIz": 0.41,
+        "Classe": "Media",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Parione-Sant'Eustachio-Colonna",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.89593,
+        "centroid_lon": 12.47091
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.470907422747064,
+              41.89952232421509
+            ],
+            [
+              12.474320839811384,
+              41.89846988720893
+            ],
+            [
+              12.47573472345346,
+              41.89592907951513
+            ],
+            [
+              12.474320839811384,
+              41.89338827182132
+            ],
+            [
+              12.470907422747064,
+              41.892335834815164
+            ],
+            [
+              12.467494005682745,
+              41.89338827182132
+            ],
+            [
+              12.466080122040669,
+              41.89592907951513
+            ],
+            [
+              12.467494005682745,
+              41.89846988720893
+            ],
+            [
+              12.470907422747064,
+              41.89952232421509
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "B3",
+      "properties": {
+        "Zona_ID": "B3",
+        "Nome": "Rione Trevi nord",
+        "Fascia": "2a fascia",
+        "Mean_RIz": 0.48,
+        "Classe": "Media",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Rione Trevi nord",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.89877,
+        "centroid_lon": 12.48812
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.488119652402636,
+              41.90236300165688
+            ],
+            [
+              12.491533221301543,
+              41.90131056465072
+            ],
+            [
+              12.492947167835565,
+              41.898769756956916
+            ],
+            [
+              12.491533221301543,
+              41.89622894926311
+            ],
+            [
+              12.488119652402636,
+              41.89517651225695
+            ],
+            [
+              12.48470608350373,
+              41.89622894926311
+            ],
+            [
+              12.483292136969707,
+              41.898769756956916
+            ],
+            [
+              12.48470608350373,
+              41.90131056465072
+            ],
+            [
+              12.488119652402636,
+              41.90236300165688
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "B4",
+      "properties": {
+        "Zona_ID": "B4",
+        "Nome": "Monti nord 2a fascia",
+        "Fascia": "2a fascia",
+        "Mean_RIz": 0.44,
+        "Classe": "Media",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Monti nord 2a fascia",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.89439,
+        "centroid_lon": 12.49454
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.49454033467741,
+              41.897983111749916
+            ],
+            [
+              12.497953669479763,
+              41.89693067474376
+            ],
+            [
+              12.49936751904782,
+              41.89438986704995
+            ],
+            [
+              12.497953669479763,
+              41.89184905935615
+            ],
+            [
+              12.49454033467741,
+              41.89079662234999
+            ],
+            [
+              12.491126999875057,
+              41.89184905935615
+            ],
+            [
+              12.489713150307,
+              41.89438986704995
+            ],
+            [
+              12.491126999875057,
+              41.89693067474376
+            ],
+            [
+              12.49454033467741,
+              41.897983111749916
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "B5",
+      "properties": {
+        "Zona_ID": "B5",
+        "Nome": "Esquilino Ovest",
+        "Fascia": "2a fascia",
+        "Mean_RIz": 0.64,
+        "Classe": "Alta",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Esquilino Ovest",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.889,
+        "centroid_lon": 12.49769
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.497687025470416,
+              41.89259324469997
+            ],
+            [
+              12.501100072266349,
+              41.89154080769381
+            ],
+            [
+              12.502513802538237,
+              41.889
+            ],
+            [
+              12.501100072266349,
+              41.8864591923062
+            ],
+            [
+              12.497687025470416,
+              41.88540675530004
+            ],
+            [
+              12.494273978674483,
+              41.8864591923062
+            ],
+            [
+              12.492860248402595,
+              41.889
+            ],
+            [
+              12.494273978674483,
+              41.89154080769381
+            ],
+            [
+              12.497687025470416,
+              41.89259324469997
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "B6",
+      "properties": {
+        "Zona_ID": "B6",
+        "Nome": "Monti-Appio-Latino",
+        "Fascia": "2a fascia",
+        "Mean_RIz": 0.49,
+        "Classe": "Alta",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Monti-Appio-Latino",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.88271,
+        "centroid_lon": 12.49663
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.496630390456978,
+              41.88630506647503
+            ],
+            [
+              12.500043101345005,
+              41.88525262946887
+            ],
+            [
+              12.501456692479286,
+              41.88271182177507
+            ],
+            [
+              12.500043101345005,
+              41.88017101408126
+            ],
+            [
+              12.496630390456978,
+              41.879118577075104
+            ],
+            [
+              12.493217679568952,
+              41.88017101408126
+            ],
+            [
+              12.491804088434671,
+              41.88271182177507
+            ],
+            [
+              12.493217679568952,
+              41.88525262946887
+            ],
+            [
+              12.496630390456978,
+              41.88630506647503
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "B7",
+      "properties": {
+        "Zona_ID": "B7",
+        "Nome": "San Saba-Ostiense",
+        "Fascia": "2a fascia",
+        "Mean_RIz": 0.34,
+        "Classe": "Bassa",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "San Saba-Ostiense",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.87558,
+        "centroid_lon": 12.48358
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.483577555026587,
+              41.879169852253526
+            ],
+            [
+              12.486989884888777,
+              41.87811741524737
+            ],
+            [
+              12.488403318196985,
+              41.87557660755356
+            ],
+            [
+              12.486989884888777,
+              41.87303579985976
+            ],
+            [
+              12.483577555026587,
+              41.8719833628536
+            ],
+            [
+              12.480165225164397,
+              41.87303579985976
+            ],
+            [
+              12.478751791856189,
+              41.87557660755356
+            ],
+            [
+              12.480165225164397,
+              41.87811741524737
+            ],
+            [
+              12.483577555026587,
+              41.879169852253526
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "B8",
+      "properties": {
+        "Zona_ID": "B8",
+        "Nome": "Ripa-Aventino 2",
+        "Fascia": "2a fascia",
+        "Mean_RIz": 0.34,
+        "Classe": "Bassa",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Ripa-Aventino 2",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.87842,
+        "centroid_lon": 12.47537
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.47537037656381,
+              41.882009341329976
+            ],
+            [
+              12.478782858040331,
+              41.88095690432382
+            ],
+            [
+              12.480196354149253,
+              41.87841609663001
+            ],
+            [
+              12.478782858040331,
+              41.87587528893621
+            ],
+            [
+              12.47537037656381,
+              41.87482285193005
+            ],
+            [
+              12.471957895087288,
+              41.87587528893621
+            ],
+            [
+              12.470544398978365,
+              41.87841609663001
+            ],
+            [
+              12.471957895087288,
+              41.88095690432382
+            ],
+            [
+              12.47537037656381,
+              41.882009341329976
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "B10",
+      "properties": {
+        "Zona_ID": "B10",
+        "Nome": "Rione Trastevere 2a fascia",
+        "Fascia": "2a fascia",
+        "Mean_RIz": 0.31,
+        "Classe": "Bassa",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Rione Trastevere 2a fascia",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.88179,
+        "centroid_lon": 12.46816
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.468161474941486,
+              41.885379742985165
+            ],
+            [
+              12.47157413640875,
+              41.884327305979006
+            ],
+            [
+              12.472987707072278,
+              41.8817864982852
+            ],
+            [
+              12.47157413640875,
+              41.8792456905914
+            ],
+            [
+              12.468161474941486,
+              41.87819325358524
+            ],
+            [
+              12.464748813474221,
+              41.8792456905914
+            ],
+            [
+              12.463335242810693,
+              41.8817864982852
+            ],
+            [
+              12.464748813474221,
+              41.884327305979006
+            ],
+            [
+              12.468161474941486,
+              41.885379742985165
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "C1",
+      "properties": {
+        "Zona_ID": "C1",
+        "Nome": "Rione Ponte",
+        "Fascia": "3a fascia",
+        "Mean_RIz": 0.38,
+        "Classe": "Bassa",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Rione Ponte",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.89621,
+        "centroid_lon": 12.46122
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.461220908196434,
+              41.90070476731322
+            ],
+            [
+              12.465487698509213,
+              41.89938922105552
+            ],
+            [
+              12.467255060924566,
+              41.896213211438265
+            ],
+            [
+              12.465487698509213,
+              41.89303720182101
+            ],
+            [
+              12.461220908196434,
+              41.89172165556331
+            ],
+            [
+              12.456954117883656,
+              41.89303720182101
+            ],
+            [
+              12.455186755468302,
+              41.896213211438265
+            ],
+            [
+              12.456954117883656,
+              41.89938922105552
+            ],
+            [
+              12.461220908196434,
+              41.90070476731322
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "C2",
+      "properties": {
+        "Zona_ID": "C2",
+        "Nome": "Campo Marzio",
+        "Fascia": "3a fascia",
+        "Mean_RIz": 0.45,
+        "Classe": "Media",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Campo Marzio",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.90549,
+        "centroid_lon": 12.47607
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.476066006299822,
+              41.90997789319035
+            ],
+            [
+              12.480333416284992,
+              41.90866234693265
+            ],
+            [
+              12.482101035377056,
+              41.905486337315395
+            ],
+            [
+              12.480333416284992,
+              41.90231032769814
+            ],
+            [
+              12.476066006299822,
+              41.90099478144044
+            ],
+            [
+              12.471798596314652,
+              41.90231032769814
+            ],
+            [
+              12.470030977222589,
+              41.905486337315395
+            ],
+            [
+              12.471798596314652,
+              41.90866234693265
+            ],
+            [
+              12.476066006299822,
+              41.90997789319035
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "C3",
+      "properties": {
+        "Zona_ID": "C3",
+        "Nome": "Piazza della Repubblica",
+        "Fascia": "3a fascia",
+        "Mean_RIz": 0.67,
+        "Classe": "Alta",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Piazza della Repubblica",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.9017,
+        "centroid_lon": 12.49907
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.499065233979659,
+              41.906195594344
+            ],
+            [
+              12.503332391179207,
+              41.9048800480863
+            ],
+            [
+              12.50509990556404,
+              41.90170403846904
+            ],
+            [
+              12.503332391179207,
+              41.898528028851786
+            ],
+            [
+              12.499065233979659,
+              41.897212482594085
+            ],
+            [
+              12.49479807678011,
+              41.898528028851786
+            ],
+            [
+              12.493030562395278,
+              41.90170403846904
+            ],
+            [
+              12.49479807678011,
+              41.9048800480863
+            ],
+            [
+              12.499065233979659,
+              41.906195594344
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "C4",
+      "properties": {
+        "Zona_ID": "C4",
+        "Nome": "Esquilino Est",
+        "Fascia": "3a fascia",
+        "Mean_RIz": 0.46,
+        "Classe": "Media",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Esquilino Est",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.89212,
+        "centroid_lon": 12.50577
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.505767237392256,
+              41.89661135784526
+            ],
+            [
+              12.510033754257622,
+              41.89529581158756
+            ],
+            [
+              12.511801003407351,
+              41.8921198019703
+            ],
+            [
+              12.510033754257622,
+              41.88894379235305
+            ],
+            [
+              12.505767237392256,
+              41.887628246095346
+            ],
+            [
+              12.50150072052689,
+              41.88894379235305
+            ],
+            [
+              12.49973347137716,
+              41.8921198019703
+            ],
+            [
+              12.50150072052689,
+              41.89529581158756
+            ],
+            [
+              12.505767237392256,
+              41.89661135784526
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "C5",
+      "properties": {
+        "Zona_ID": "C5",
+        "Nome": "Appio-Latino",
+        "Fascia": "3a fascia",
+        "Mean_RIz": 0.4,
+        "Classe": "Media",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Appio-Latino",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.88103,
+        "centroid_lon": 12.50497
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.504966364624993,
+              41.885519059022144
+            ],
+            [
+              12.50923214078961,
+              41.884203512764444
+            ],
+            [
+              12.510999083131043,
+              41.88102750314719
+            ],
+            [
+              12.50923214078961,
+              41.87785149352993
+            ],
+            [
+              12.504966364624993,
+              41.87653594727223
+            ],
+            [
+              12.500700588460376,
+              41.87785149352993
+            ],
+            [
+              12.498933646118942,
+              41.88102750314719
+            ],
+            [
+              12.500700588460376,
+              41.884203512764444
+            ],
+            [
+              12.504966364624993,
+              41.885519059022144
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "C6",
+      "properties": {
+        "Zona_ID": "C6",
+        "Nome": "Ostiense-Ardeatino",
+        "Fascia": "3a fascia",
+        "Mean_RIz": 0.21,
+        "Classe": "Bassa",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Ostiense-Ardeatino",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.86958,
+        "centroid_lon": 12.49149
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.491492416161087,
+              41.87407641908186
+            ],
+            [
+              12.495757428667455,
+              41.87276087282416
+            ],
+            [
+              12.497524054691283,
+              41.8695848632069
+            ],
+            [
+              12.495757428667455,
+              41.86640885358965
+            ],
+            [
+              12.491492416161087,
+              41.86509330733195
+            ],
+            [
+              12.48722740365472,
+              41.86640885358965
+            ],
+            [
+              12.485460777630891,
+              41.8695848632069
+            ],
+            [
+              12.48722740365472,
+              41.87276087282416
+            ],
+            [
+              12.491492416161087,
+              41.87407641908186
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "C7",
+      "properties": {
+        "Zona_ID": "C7",
+        "Nome": "Testaccio",
+        "Fascia": "3a fascia",
+        "Mean_RIz": 0.34,
+        "Classe": "Bassa",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Testaccio",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.87502,
+        "centroid_lon": 12.46885
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.468849503449297,
+              41.87951034060233
+            ],
+            [
+              12.473114878549103,
+              41.87819479434463
+            ],
+            [
+              12.47488165476405,
+              41.875018784727374
+            ],
+            [
+              12.473114878549103,
+              41.87184277511012
+            ],
+            [
+              12.468849503449297,
+              41.87052722885242
+            ],
+            [
+              12.464584128349491,
+              41.87184277511012
+            ],
+            [
+              12.462817352134543,
+              41.875018784727374
+            ],
+            [
+              12.464584128349491,
+              41.87819479434463
+            ],
+            [
+              12.468849503449297,
+              41.87951034060233
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "C8",
+      "properties": {
+        "Zona_ID": "C8",
+        "Nome": "Trastevere 3",
+        "Fascia": "3a fascia",
+        "Mean_RIz": 0.48,
+        "Classe": "Alta",
+        "Popolazione_Residente": null,
+        "Quota_Giovani_Pct": null,
+        "Quota_Anziani_Pct": null,
+        "Quota_Stranieri_Pct": null,
+        "Quota_Laureati_Pct": null,
+        "Tasso_Occupazione_Pct": null,
+        "Dimensione_Media_Famiglia": null,
+        "Abitazioni_Residenziali": null,
+        "Numero_Edifici": null,
+        "Edifici_Abitativi_Pct": null,
+        "Edifici_Servizi_Pubblici_Pct": null,
+        "Edifici_Scolastici_Universitari_Biblioteche": null,
+        "Edifici_Attivita_Culturali": null,
+        "Spettacoli_Dal_Vivo_Media_Giornaliera": null,
+        "Spettacoli_Totali_Media_Giornaliera": null,
+        "Posti_Letto_Turistici": null,
+        "Rapporto_Posti_Letto_Turistici_Popolazione_Pct": null,
+        "Rapporto_Alloggi_Turistici_Abitativi_Pct": null,
+        "M0": 50.0,
+        "C0": 50.0,
+        "T0": 50.0,
+        "S0": 50.0,
+        "nome": "Trastevere 3",
+        "baseline_source": "modeled_proxy",
+        "centroid_lat": 41.88103,
+        "centroid_lon": 12.45903
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              12.459033635375006,
+              41.885519059022144
+            ],
+            [
+              12.463299411539623,
+              41.884203512764444
+            ],
+            [
+              12.465066353881056,
+              41.88102750314719
+            ],
+            [
+              12.463299411539623,
+              41.87785149352993
+            ],
+            [
+              12.459033635375006,
+              41.87653594727223
+            ],
+            [
+              12.454767859210389,
+              41.87785149352993
+            ],
+            [
+              12.453000916868955,
+              41.88102750314719
+            ],
+            [
+              12.454767859210389,
+              41.884203512764444
+            ],
+            [
+              12.459033635375006,
+              41.885519059022144
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

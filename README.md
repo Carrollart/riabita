@@ -60,7 +60,7 @@ configuration file.
 | Variable | Purpose | Default |
 |---|---|---|
 | `RIABITA_DATABASE_URL` | SQLAlchemy URL for SQLite or PostgreSQL | `sqlite+pysqlite:///<project>/.data/riabita.sqlite3` |
-| `RIABITA_DISTRICTS_PATH` | Path to an official district GeoJSON | unset, demo data used |
+| `RIABITA_DISTRICTS_PATH` | Path to a district GeoJSON override | Generated CArME GeoJSON |
 | `RIABITA_DEFAULT_LANGUAGE` | Starting language (`it`, `en`, or `fr`) | `it` |
 | `RIABITA_LEADERBOARD_LIMIT` | Rows shown in the leaderboard | `10` |
 
@@ -101,6 +101,40 @@ RIABITA_LEADERBOARD_LIMIT = 10
 
 Do not commit `.streamlit/secrets.toml` when it contains credentials or machine-
 specific paths. The example file contains only safe placeholder values.
+
+### CArME district map
+
+The repository includes the tabular source at `src/riabita/data/carme_indicators.csv` and a
+reproducible generated map at `src/riabita/data/carme_zones.geojson`. Regenerate
+the map after changing the CSV:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m riabita.data.convert_csv_to_geojson \
+  src/riabita/data/carme_indicators.csv src/riabita/data/carme_zones.geojson
+```
+
+The converter projects each zone around the Velabro anchor using the documented
+bearing and walking-distance heuristics. The polygons are visual approximations,
+not authoritative cadastral boundaries. The CSV contains `Mean_RIz` but does not
+contain the four simulator baselines, so `M0`, `C0`, `T0`, and `S0` are transparent
+modeled proxy estimates. The generated properties identify them with
+`baseline_source = "modeled_proxy"`.
+
+The app uses this generated GeoJSON by default. Set `RIABITA_DISTRICTS_PATH` to
+load another GeoJSON; an invalid or missing source still falls back to bundled
+demo data.
+
+The implementation is split across these modules:
+
+- `src/riabita/data/convert_csv_to_geojson.py` reads the CSV, applies the
+  Velabro placement table, derives the labeled proxy baselines, and writes the
+  FeatureCollection.
+- `src/riabita/data/loader.py` validates and loads GeoJSON into `District`
+  objects. It remains the only runtime GeoJSON reader.
+- `src/riabita/ui/charts.py` builds the token-free Plotly Mapbox overview, and
+  `src/riabita/ui/views.py` renders it.
+- `src/main.py` composes the overview map with the existing selectbox. The map
+  is exploratory; the selectbox remains the authoritative district selector.
 
 ### Supplying real district data
 

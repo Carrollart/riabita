@@ -6,17 +6,20 @@ These return figures and never call Streamlit, so they are unit-testable.
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
+from typing import TypeVar
 
 import plotly.graph_objects as go
 
 from riabita import config
+from riabita.domain.models import District
 
 _BASELINE_COLOR = "rgba(120, 120, 120, 0.9)"
 _FINAL_COLOR = "rgba(29, 145, 96, 1.0)"
 _BAR_COLORS = ("#1d9160", "#3b6ea5", "#9a6f3f")
+_Value = TypeVar("_Value")
 
 
-def _close(values: Sequence[float]) -> list[float]:
+def _close(values: Sequence[_Value]) -> list[_Value]:
     """Repeat the first point so the polygon closes instead of drawing an arc."""
     items = list(values)
     return items + items[:1]
@@ -30,7 +33,7 @@ def build_radar(
     final_name: str = "Final",
 ) -> go.Figure:
     """Overlay the baseline and outcome profiles on a fixed 0..100 axis."""
-    categories = _close(labels)
+    categories = list(labels) + list(labels[:1])
     figure = go.Figure()
 
     figure.add_trace(
@@ -93,5 +96,49 @@ def build_comparison(scores: Mapping[str, float]) -> go.Figure:
         yaxis=dict(title=""),
         showlegend=False,
         margin=dict(l=40, r=40, t=30, b=30),
+    )
+    return figure
+
+
+def build_selection_map(districts: Sequence[District]) -> go.Figure:
+    """Build a token-free Mapbox choropleth for the available districts."""
+    features = []
+    locations = []
+    values = []
+    text = []
+    for district in districts:
+        if not district.geometry:
+            continue
+        locations.append(district.district_id)
+        values.append(float(district.baseline.as_array().mean()))
+        text.append(district.name)
+        features.append({
+            "type": "Feature",
+            "id": district.district_id,
+            "properties": {"name": district.name},
+            "geometry": district.geometry,
+        })
+
+    figure = go.Figure(
+        go.Choroplethmapbox(
+            geojson={"type": "FeatureCollection", "features": features},
+            locations=locations,
+            z=values,
+            text=text,
+            hovertemplate="%{text}<br>Baseline: %{z:.1f}<extra></extra>",
+            colorscale="Viridis",
+            marker_opacity=0.65,
+            marker_line_width=1,
+            colorbar_title="Baseline",
+        )
+    )
+    figure.update_layout(
+        mapbox=dict(
+            style="carto-positron",
+            center={"lat": 41.889, "lon": 12.482},
+            zoom=12.5,
+        ),
+        margin=dict(l=0, r=0, t=0, b=0),
+        showlegend=False,
     )
     return figure

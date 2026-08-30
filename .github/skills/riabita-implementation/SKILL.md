@@ -85,3 +85,20 @@ intentionally does not decide:
   [simulation-rules.md](./references/simulation-rules.md) with a research-backed
   constant.
 - Adding user accounts, deployment infrastructure, or anti-cheat guarantees.
+
+## CArME Rome data
+
+The repository includes `src/riabita/data/carme_indicators.csv` and the
+generated `src/riabita/data/carme_zones.geojson`. Regenerate the 35-feature map
+with `riabita.data.convert_csv_to_geojson.generate_carme_geojson()` after
+changing the table.
+
+The converter anchors Velabro at `41.889, 12.482`, places zones with the
+supplied bearing/distance heuristics, and creates closed octagonal WGS84
+polygons. These are visualization approximations, not cadastral boundaries.
+
+The CSV provides `Mean_RIz` and territorial indicators but no authoritative
+`M0`, `C0`, `T0`, and `S0` values. The converter derives proxy baselines and
+marks them `baseline_source: "modeled_proxy"`; do not describe them as official
+research measurements. Preserve `(M, C, T, S)` ordering and keep this mapping
+in the data layer, outside the pure simulation engine.

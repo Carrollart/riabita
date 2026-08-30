@@ -1,0 +1,6 @@
+
+[dev]
+pytest>=8.0
+
+[geo]
+geopandas>=0.14
