@@ -58,6 +58,8 @@ def build_radar(
     )
 
     figure.update_layout(
+        width=800,
+        height=520,
         polar=dict(
             radialaxis=dict(
                 visible=True,
@@ -65,7 +67,7 @@ def build_radar(
             )
         ),
         showlegend=True,
-        margin=dict(l=40, r=40, t=30, b=30),
+        margin=dict(l=80, r=40, t=30, b=70),
     )
     return figure
 

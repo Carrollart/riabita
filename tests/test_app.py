@@ -50,6 +50,13 @@ def test_radar_axis_is_pinned_to_the_full_scale(radar) -> None:
     )
 
 
+def test_radar_canvas_leaves_room_for_bottom_axis_label(radar) -> None:
+    assert radar.layout.width == 800
+    assert radar.layout.height == 520
+    assert radar.layout.margin.l == 80
+    assert radar.layout.margin.b == 70
+
+
 def test_radar_baseline_uses_a_dashed_line(radar) -> None:
     assert radar.data[0].line.dash == "dash"
     assert radar.data[1].line.dash == "solid"
