@@ -70,7 +70,7 @@ Then open the URL shown by Streamlit, normally `http://localhost:8501`. Do not
 start the application with `python src/main.py`: the entry point detects this
 case and prints the Streamlit command to use.
 
-The app runs immediately with bundled demo data and a local SQLite leaderboard at
+The app loads the bundled CArME shapefile and uses a local SQLite leaderboard at
 `.data/riabita.sqlite3`. The directory and schema are created on first use.
 
 ## Configuration
@@ -83,7 +83,7 @@ configuration file.
 | Variable | Purpose | Default |
 |---|---|---|
 | `RIABITA_DATABASE_URL` | SQLAlchemy URL for SQLite or PostgreSQL | `sqlite+pysqlite:///<project>/.data/riabita.sqlite3` |
-| `RIABITA_DISTRICTS_PATH` | Path to a district GeoJSON override | Generated CArME GeoJSON |
+| `RIABITA_DISTRICTS_PATH` | Path to a district shapefile override | `src/riabita/data/zona_carme_riabita/zone_carme_riabita.shp` |
 | `RIABITA_DEFAULT_LANGUAGE` | Starting language (`it`, `en`, or `fr`) | `it` |
 | `RIABITA_LEADERBOARD_LIMIT` | Rows shown in the leaderboard | `10` |
 
@@ -117,7 +117,7 @@ The file uses TOML syntax and is read by `config.py` through Streamlit Secrets:
 
 ```toml
 RIABITA_DATABASE_URL = "sqlite+pysqlite:///./.data/riabita.sqlite3"
-RIABITA_DISTRICTS_PATH = "./data/quartieri.geojson"
+RIABITA_DISTRICTS_PATH = "./src/riabita/data/zona_carme_riabita/zone_carme_riabita.shp"
 RIABITA_DEFAULT_LANGUAGE = "it"
 RIABITA_LEADERBOARD_LIMIT = 10
 ```
@@ -125,103 +125,22 @@ RIABITA_LEADERBOARD_LIMIT = 10
 Do not commit `.streamlit/secrets.toml` when it contains credentials or machine-
 specific paths. The example file contains only safe placeholder values.
 
-### CArME district map
+### CArME district data
 
-The repository includes the tabular source at `src/riabita/data/carme_indicators.csv`, the
-real zone geometries in `docs/zone_carme/`, and the generated runtime map at
-`src/riabita/data/carme_zones.geojson`. Regenerate the active district map after
-changing the CSV or updating the shapefile source:
+The app reads `src/riabita/data/zona_carme_riabita/zone_carme_riabita.shp`
+directly. Keep its companion `.dbf`, `.shx`, `.prj`, and `.cpg` files beside it.
+The DBF embeds district codes, names, and indicators `MO`, `CO`, `TO`, and `SO`.
+These normalized values are scaled from `0..1` to the game's `0..100` dimension
+range in `(M, C, T, S)` order. Geometry is reprojected in memory to `EPSG:4326`.
 
-```bash
-PYTHONPATH=src .venv/bin/python -m riabita.data.convert_csv_to_geojson \
-  src/riabita/data/carme_indicators.csv src/riabita/data/carme_zones.geojson \
-  --shapefile docs/zone_carme/zone_carme.shp
-```
+The shapefile has 27 records. A0 has no numeric dimension values and is skipped
+with a localized warning, leaving 26 playable districts. If the shapefile cannot
+be read or contains no valid districts, the app reports an error; it does not
+load GeoJSON or demo data. `RIABITA_DISTRICTS_PATH` can point to another complete
+ESRI shapefile. GeoPandas is installed with the standard requirements.
 
-The app reads GeoJSON only. The current implementation prefers the authoritative
-shapefile polygons for the real Rome zones, and keeps the CSV-derived proxy values for the
-composite/study areas that are not present in the shapefile. The generated output stays in
-`EPSG:4326`, keeps the district schema expected by `load_districts()`, and preserves the
-`baseline_source = "modeled_proxy"` labeling for the derived dimensions.
-
-The CSV contains `Mean_RIz` and territorial indicators, but it does not include the
-four simulator baselines. `M0`, `C0`, `T0`, and `S0` remain transparent modeled
-estimates rather than official research measurements. `nama`, `M0`, `C0`, `T0`, and `S0`
-are the values the game consumes; all geometry remains a visual district abstraction.
-
-The app uses this generated GeoJSON by default. Set `RIABITA_DISTRICTS_PATH` to load another
-GeoJSON; an invalid or missing source still falls back to bundled demo data.
-
-The implementation is split across these modules:
-
-- `src/riabita/data/convert_csv_to_geojson.py` reads the CSV, optionally overlays the
-  real shapefile geometry, derives the labeled proxy baselines, and writes the FeatureCollection.
-- `src/riabita/data/loader.py` validates and loads GeoJSON into `District` objects. It remains the only runtime GeoJSON reader.
-- `src/riabita/ui/charts.py` builds the token-free Plotly Mapbox overview, and
-  `src/riabita/ui/views.py` renders it.
-- `src/main.py` composes the overview map with the existing selectbox. The map is
-  exploratory; the selectbox remains the authoritative district selector.
-
-### Supplying real district data
-
-Point `RIABITA_DISTRICTS_PATH` at a GeoJSON whose features carry these
-properties:
-
-```json
-{
-  "type": "Feature",
-  "properties": { "nome": "San Lorenzo", "M0": 55, "C0": 40, "T0": 80, "S0": 35 },
-  "geometry": { "type": "Polygon", "coordinates": [[[12.51, 41.89], "..."]] }
-}
-```
-
-`M0`, `C0`, `T0` and `S0` must each be between 0 and 100. Invalid features are
-skipped with a warning; an unusable file falls back to demo data so a round can
-always start. Files are expected in `EPSG:4326`. To load a file in another
-coordinate system, install the optional extra:
-
-```bash
-.venv/bin/python -m pip install -e ".[geo]"
-```
-
-> The bundled districts are **illustrative placeholders**, not authoritative RIz
-> research output. Their geometries are simplified rectangles.
-
-### Converting a Shapefile to GeoJSON
-
-The application reads GeoJSON files. To read a Shapefile or convert it to
-GeoJSON, install the optional GeoPandas dependency:
-
-```bash
-.venv/bin/python -m pip install -e ".[geo]"
-```
-
-Keep all files belonging to the Shapefile in the same directory, especially:
-
-```text
-quartieri.shp
-quartieri.shx
-quartieri.dbf
-quartieri.prj
-```
-
-Convert the file with this Python command:
-
-```bash
-.venv/bin/python - <<'PY'
-import geopandas as gpd
-
-districts = gpd.read_file("quartieri.shp")
-districts = districts.to_crs("EPSG:4326")
-districts.to_file("quartieri.geojson", driver="GeoJSON")
-PY
-```
-
-The `.prj` file identifies the source coordinate system. Reprojecting to
-`EPSG:4326` makes the result compatible with the district loader. The resulting
-GeoJSON must contain the properties `nome`, `M0`, `C0`, `T0`, and `S0`, with each
-dimension value between 0 and 100. Configure it with `RIABITA_DISTRICTS_PATH` in
-the environment or in `.streamlit/secrets.toml`.
+`src/riabita/data/loader.py` is the only district reader. The map remains an
+exploratory view; the district selectbox is the authoritative selection control.
 
 ## Running the tests
 
@@ -250,7 +169,7 @@ src/
     ├── engine/              Simulation pipeline and scoring
     ├── events.py            Random event catalog
     ├── strategies.py        AI and random benchmarks
-    ├── data/                GeoJSON loading and demo districts
+    ├── data/                CArME shapefile loading
     ├── leaderboard/         SQLAlchemy models, repository, service
     └── ui/                  Session state, charts, Streamlit views
 tests/                       Mirrors the module layout

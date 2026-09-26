@@ -1,3 +1,5 @@
+> Historical source note: the CSV described below is no longer the app's runtime source. The app reads embedded `MO`, `CO`, `TO`, and `SO` indicators directly from `src/riabita/data/zona_carme_riabita/zone_carme_riabita.shp`; normalized values are scaled to the game's 0-100 range, and A0 is omitted because its dimensions are missing. See [README.md](../README.md) for the current data contract.
+
 I have generated the CArME system indicators dataset as a structured CSV file as carme\_indicators.csv.  
 This file organizes the complete set of indicators extracted from your university research on Rome's historic center, providing a scientific baseline for the **RIABITA ROMA** simulation engine.
 

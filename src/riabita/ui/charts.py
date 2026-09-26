@@ -100,7 +100,9 @@ def build_comparison(scores: Mapping[str, float]) -> go.Figure:
     return figure
 
 
-def build_selection_map(districts: Sequence[District]) -> go.Figure:
+def build_selection_map(
+    districts: Sequence[District], selected_district_id: str | None = None
+) -> go.Figure:
     """Build a token-free Mapbox choropleth for the available districts."""
     features = []
     locations = []
@@ -119,9 +121,10 @@ def build_selection_map(districts: Sequence[District]) -> go.Figure:
             "geometry": district.geometry,
         })
 
+    geojson = {"type": "FeatureCollection", "features": features}
     figure = go.Figure(
         go.Choroplethmapbox(
-            geojson={"type": "FeatureCollection", "features": features},
+            geojson=geojson,
             locations=locations,
             z=values,
             text=text,
@@ -132,6 +135,29 @@ def build_selection_map(districts: Sequence[District]) -> go.Figure:
             colorbar_title="Baseline",
         )
     )
+    if selected_district_id in locations:
+        selected_feature = next(
+            feature for feature in features if feature["id"] == selected_district_id
+        )
+        figure.add_trace(
+            go.Choroplethmapbox(
+                geojson={
+                    "type": "FeatureCollection",
+                    "features": [selected_feature],
+                },
+                locations=[selected_district_id],
+                z=[1],
+                colorscale=[
+                    [0, "rgba(245, 158, 11, 0.18)"],
+                    [1, "rgba(245, 158, 11, 0.18)"],
+                ],
+                showscale=False,
+                marker_opacity=0.25,
+                marker_line_color="#f59e0b",
+                marker_line_width=4,
+                hoverinfo="skip",
+            )
+        )
     figure.update_layout(
         mapbox=dict(
             style="carto-positron",

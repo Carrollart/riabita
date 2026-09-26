@@ -1,6 +1,6 @@
 ---
 name: riabita-implementation
-description: "Implementation guide for RIABITA ROMA, the multilingual Streamlit urban simulation game built on the Riabitability Index (RIz). Use when implementing, extending, reviewing, or debugging the simulation engine, impact matrix, overtourism and equilibrium penalties, random events, AI and random benchmark strategies, district GeoJSON loading, Plotly radar and comparison charts, Italian/English/others localization, or the SQLite/PostgreSQL leaderboard. Provides normalized game rules, module contracts, a phased task plan, and acceptance tests."
+description: "Implementation guide for RIABITA ROMA, the multilingual Streamlit urban simulation game built on the Riabitability Index (RIz). Use when implementing, extending, reviewing, or debugging the simulation engine, impact matrix, overtourism and equilibrium penalties, random events, AI and random benchmark strategies, district shapefile loading, Plotly radar and comparison charts, Italian/English/others localization, or the SQLite/PostgreSQL leaderboard. Provides normalized game rules, module contracts, a phased task plan, and acceptance tests."
 argument-hint: "Optional: phase number or module to implement (for example 'phase 2' or 'engine')"
 ---
 
@@ -37,7 +37,7 @@ Load only what the current task needs.
 | [requirements.md](./references/requirements.md) | Scoping work, tracing a feature, checking what is out of scope |
 | [simulation-rules.md](./references/simulation-rules.md) | Touching engine math, thresholds, events, or scoring |
 | [architecture.md](./references/architecture.md) | Creating modules, types, config, or persistence |
-| [data-and-ui.md](./references/data-and-ui.md) | Working on GeoJSON loading, localization, layout, or charts |
+| [data-and-ui.md](./references/data-and-ui.md) | Working on shapefile loading, localization, layout, or charts |
 | [plan.md](./references/plan.md) | Choosing what to build next; phased task checklist |
 | [verification.md](./references/verification.md) | Writing or running tests before declaring work done |
 
@@ -113,19 +113,10 @@ intentionally does not decide:
 
 ## CArME Rome data
 
-The repository includes `src/riabita/data/carme_indicators.csv`, the real zone
-source in `docs/zone_carme/`, and the generated runtime map in
-`src/riabita/data/carme_zones.geojson`. Regenerate the 35-feature map with
-`riabita.data.convert_csv_to_geojson.generate_carme_geojson()` after changing
-the table or updating zone geometry.
-
-Use the shapefile as the authoritative source for real district polygons when
-available; for composite or study-zone records without matching shapefile
-geometry, keep the CSV-derived fallback generation. The converter reprojects the
-shapefile to `EPSG:4326` and keeps the app’s schema contract unchanged.
-
-The CSV provides `Mean_RIz` and territorial indicators but no authoritative
-`M0`, `C0`, `T0`, and `S0` values. The converter derives proxy baselines and
-marks them `baseline_source: "modeled_proxy"`; do not describe them as official
-research measurements. Preserve `(M, C, T, S)` ordering and keep this mapping
-in the data layer, outside the pure simulation engine.
+The bundled runtime source is
+`src/riabita/data/zona_carme_riabita/zone_carme_riabita.shp`, with indicators
+embedded in its DBF sidecar. Map `MO`, `CO`, `TO`, and `SO` to `(M, C, T, S)` and
+scale normalized values by 100. Reproject geometry to `EPSG:4326` in memory.
+A0 has missing dimension fields and is skipped, leaving 26 playable districts.
+The loader does not read CSV or GeoJSON and does not fall back to demo data;
+invalid sources raise `DataSourceError` for the UI to display.

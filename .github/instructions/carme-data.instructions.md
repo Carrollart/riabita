@@ -1,14 +1,11 @@
 ---
-applyTo: "src/riabita/data/**/*.py,src/riabita/data/**/*.geojson,src/riabita/data/**/*.csv,tests/test_converter.py"
+applyTo: "src/riabita/data/**/*.py,tests/test_loader.py"
 ---
 # CArME data guidance
 
-- The authoritative tabular input for this integration is `src/riabita/data/carme_indicators.csv`.
-- The authoritative geometry source for the real zones is `docs/zone_carme/zone_carme.shp`; generate `src/riabita/data/carme_zones.geojson` with `generate_carme_geojson()` from `convert_csv_to_geojson.py` and pass `--shapefile` when regenerating the active main map.
-- Do not hand-edit generated GeoJSON. The converter writes WGS84 features that the app can load directly.
-- Preserve the source columns and the canonical playable properties `nome`, `M0`, `C0`, `T0`, `S0`, `Mean_RIz`, `Classe`, `centroid_lat`, and `centroid_lon`.
-- Keep all vectors in `(M, C, T, S)` order. The CSV has `Mean_RIz`, but no authoritative dimension columns; generated dimensions use `baseline_source: modeled_proxy` and must not be described as official measurements.
-- For base zones present in the shapefile, use the real polygon geometry and reproject to `EPSG:4326`. For composite/study zones without real geometry, keep the CSV-derived fallback polygon generation.
-- The historical Velabro heuristic is retained as a fallback only; the shapefile-backed geometry is authoritative for the main map and should not be replaced by a synthetic layout without explicit review.
-- Keep filesystem access in the data layer. The simulation engine must not import Pandas, GeoPandas, Streamlit, or read GeoJSON directly.
-- Validate generated output through `load_districts()` and keep the explicit `RIABITA_DISTRICTS_PATH` override plus demo fallback working.
+- Use `src/riabita/data/zona_carme_riabita/zone_carme_riabita.shp` and its shapefile sidecars as the only district source.
+- The DBF fields `zc_code`, `nome`, `MO`, `CO`, `TO`, and `SO` provide IDs, names, and embedded dimension indicators. Preserve `(M, C, T, S)` order and scale normalized values by 100.
+- Reproject source geometry to `EPSG:4326` in memory. Do not read or generate GeoJSON, join a CSV, or synthesize missing indicators or geometry.
+- Skip invalid records with localized warnings. A0 has no dimension indicators and is excluded, leaving 26 playable zones.
+- `RIABITA_DISTRICTS_PATH` may override the default only with another shapefile. Missing or invalid data raises `DataSourceError`; there is no demo fallback.
+- Keep filesystem access in the data layer. The simulation engine must not import GeoPandas or Streamlit.

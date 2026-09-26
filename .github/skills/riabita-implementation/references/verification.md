@@ -136,7 +136,7 @@ turn that exceeds the remaining game budget.
 
 - `ai_allocation((55, 40, 80, 35))` returns `[25, 25, 10, 40]`.
 - The AI result always sums to `100`, stays within `0..60`, and passes validation for
-  every district in the demo dataset.
+  every supplied baseline fixture.
 - The AI skips the lift when it would breach `0` or `60`, and still sums to `100`.
 - `random_allocation` sums to exactly `100` across many seeded draws, with every value
   within `0..100`.
@@ -147,18 +147,13 @@ turn that exceeds the remaining game budget.
 
 ## V-DATA — District loading
 
-Use `tmp_path` fixtures; never a machine-specific path.
+Use the bundled shapefile or `tmp_path` shapefile fixtures; never a machine-specific path.
 
-- A valid GeoJSON loads all districts with `is_demo=False`.
-- A missing path falls back to demo data with `is_demo=True`.
-- Malformed JSON falls back to demo data and raises no unhandled exception.
-- A feature missing `M0` is dropped, and the reason is recorded.
-- A feature with `T0 = 120` is dropped as out of range.
-- A file with zero valid features falls back to demo data.
-- Null geometry loads successfully with values intact and geometry `None`.
-- A non-`EPSG:4326` source reprojects.
-- The demo dataset parses, contains the ten documented districts, and every value is
-  within `0..100`.
+- The default shapefile loads 26 districts and omits A0 with a warning.
+- Embedded `MO`, `CO`, `TO`, and `SO` values are scaled from `0..1` to `0..100` in `(M, C, T, S)` order.
+- Shapefile geometry is reprojected to `EPSG:4326`.
+- Missing required fields, unreadable files, and files with no valid indicators raise `DataSourceError`.
+- Invalid individual records are skipped and their district IDs are recorded for localized warnings.
 
 ## V-I18N — Localization
 
@@ -208,7 +203,7 @@ against temporary file-backed SQLite. No test requires a live database server.
 
 Use `streamlit.testing.v1.AppTest` so these run headless in the suite.
 
-- The app starts and renders without exception using demo data and an isolated local
+- The app starts and renders without exception using the bundled shapefile and an isolated local
   SQLite database.
 - Selecting a district displays its baseline values.
 - An all-zero turn disables the investment button; any positive total no greater than
@@ -237,8 +232,8 @@ Perform before declaring the project complete.
       round survives the switch.
 - [ ] Switch language after viewing results; the results stay and re-render translated.
 - [ ] Narrow the browser to a phone width; columns stack and nothing overflows.
-- [ ] Confirm the demo-data notice appears with no configured GeoJSON, and disappears
-      with a valid one.
+- [ ] Confirm A0 is omitted with a localized warning and invalid shapefile sources
+  produce a localized error without a demo fallback.
 - [ ] Select a district with null geometry; the map hides with an explanation and the
       round still completes.
 - [ ] Stop the database, run a round, and confirm results still render with a localized

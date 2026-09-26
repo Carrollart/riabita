@@ -33,6 +33,7 @@ if _IS_STREAMLIT:
 
 def main() -> None:
     from riabita import config, i18n
+    from riabita.domain.errors import DataSourceError
     from riabita.ui import state, views
 
     st.set_page_config(page_title="RIABITA ROMA", layout="wide")
@@ -44,17 +45,21 @@ def main() -> None:
     st.title(i18n.t("app.title", lang))
     st.caption(i18n.t("app.tagline", lang))
 
-    catalog = state.load_catalog(settings.districts_path)
-    views.render_selection_map(catalog, lang)
+    try:
+        catalog = state.load_catalog(settings.districts_path)
+    except DataSourceError:
+        st.error(i18n.t("data.source_error", lang))
+        return
+    for district_id in catalog.warnings:
+        print(i18n.t("data.district_skipped", lang, district=district_id))
     district = views.render_district_picker(catalog, lang)
     state.select_district(district.district_id)
-    views.render_gwr_profile(district, lang)
+    views.render_selection_map(catalog, lang, selected_district_id=district.district_id)
     views.render_budget_controls(district, lang)
 
     current = state.current_round()
     if current is None or current.district_id != district.district_id:
         st.info(i18n.t("app.welcome", lang))
-        views.render_map(district, lang)
         st.caption(i18n.t("app.data_caption", lang))
         return
 
@@ -76,7 +81,6 @@ def main() -> None:
     views.render_turn_history(current, lang)
     repository = _repository(settings.database_url)
     views.render_comparison(current, repository, lang)
-    views.render_map(district, lang)
     if current.is_complete:
         views.render_leaderboard(
             repository,

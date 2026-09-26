@@ -25,7 +25,7 @@ groups in [verification.md](./verification.md).
 - [ ] T002 Add `pyproject.toml` with `[tool.pytest.ini_options]` setting
       `pythonpath = ["src"]` and `testpaths = ["tests"]`, plus a `dev` dependency
       group containing `pytest`.
-- [ ] T003 [P] Extend `.gitignore` with `.env`, `*.local.geojson`, `.pytest_cache/`,
+- [ ] T003 [P] Extend `.gitignore` with `.env`, local shapefile overrides, `.pytest_cache/`,
       and any local database artifacts. [REQ-069]
 - [ ] T004 [P] Create the package skeleton under `src/riabita/` per
       [architecture.md](./architecture.md), with `__init__.py` in each subpackage.
@@ -95,14 +95,11 @@ groups in [verification.md](./verification.md).
 
 ## Phase 5 — District data
 
-- [ ] T050 Author `riabita/data/demo_districts.geojson` from the documented district
-      table, with simplified polygons and a property marking it as demo data.
-      [REQ-014]
+- [x] T050 Load the bundled shapefile and its embedded dimension indicators directly.
 - [ ] T051 Implement schema validation in `riabita/data/loader.py`: required
       properties, numeric ranges, unique names, geometry type check. [REQ-012]
-- [ ] T052 Implement `load_districts()` with the external-path-then-demo fallback,
-      per-feature error collection, and `DataSourceError` instead of propagating raw
-      I/O failures. [REQ-013]
+- [x] T052 Implement `load_districts()` with shapefile overrides, per-record warning
+      collection, and `DataSourceError` instead of propagating raw I/O failures.
 - [ ] T053 Add CRS normalization to `EPSG:4326` and null-geometry tolerance. [REQ-015]
 - [ ] T054 Loader tests against valid, malformed, missing, and empty files, using
       temporary fixtures only. → V-DATA
@@ -161,8 +158,8 @@ groups in [verification.md](./verification.md).
       [architecture.md](./architecture.md): one generator and event per turn,
       equal-credit benchmark allocations built before the event is drawn, and three
       cumulative simulations against the same event. [REQ-033, REQ-053, REQ-054]
-- [ ] T092 Build the sidebar: language selector, district selector with the demo
-      notice, baseline display, four turn sliders, cumulative/current totals and
+- [ ] T092 Build the sidebar: language selector, district selector with localized
+      warnings for skipped source records, baseline display, four turn sliders, cumulative/current totals and
       remainder, clear/restart controls, and the investment button gated on a positive
       total no greater than the remainder. [REQ-010, REQ-011, REQ-013, REQ-020, REQ-022, REQ-023, REQ-026]
 - [ ] T093 Add the concentration warning when any allocation exceeds 60. [REQ-025]
@@ -182,8 +179,8 @@ groups in [verification.md](./verification.md).
 
 ## Phase 10 — Documentation and hardening
 
-- [ ] T100 Write `README.md`: overview, setup, environment variables, how to run the
-      app, how to run tests, and how to supply an official GeoJSON. [REQ-087]
+- [x] T100 Document setup, environment variables, tests, and the bundled shapefile
+      data contract in `README.md`. [REQ-087]
 - [ ] T101 Verify the layout on a narrow viewport; confirm columns stack and no
       `st.columns` weight list mismatches its unpacking. [REQ-084]
 - [ ] T102 Audit chart and badge accessibility: labeled series, non-color-only

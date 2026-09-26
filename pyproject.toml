@@ -3,11 +3,9 @@ name = "riabita"
 version = "0.1.0"
 description = "RIABITA ROMA, an urban simulation game built on the Riabitability Index."
 requires-python = ">=3.11"
+dependencies = ["geopandas>=0.14"]
 
 [project.optional-dependencies]
-# GeoPandas is only needed to reproject district files that are not already
-# EPSG:4326. The loader parses GeoJSON with the standard library otherwise.
-geo = ["geopandas>=0.14"]
 dev = ["pytest>=8.0"]
 
 [tool.pytest.ini_options]

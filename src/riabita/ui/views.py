@@ -5,7 +5,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
-from riabita import config, i18n, strategies
+from riabita import config, i18n
 from riabita.data.loader import DistrictCatalog
 from riabita.domain.errors import LeaderboardUnavailable
 from riabita.domain.models import District, SimulationResult
@@ -44,9 +44,6 @@ def render_language_selector() -> str:
 
 def render_district_picker(catalog: DistrictCatalog, lang: str) -> District:
     st.sidebar.header(i18n.t("sidebar.district_header", lang))
-    if catalog.used_fallback:
-        st.sidebar.info(i18n.t("data.demo_notice", lang))
-
     names = list(catalog.names)
     current = state.current_round()
     locked_district: District | None = None
@@ -82,30 +79,7 @@ def render_district_picker(catalog: DistrictCatalog, lang: str) -> District:
         hide_index=True,
         width="stretch",
     )
-    render_gwr_profile(district, lang, sidebar=True)
     return district
-
-
-def render_gwr_profile(district: District, lang: str, *, sidebar: bool = False) -> None:
-    """Display the district's active GWR band and priority coefficients."""
-    target = st.sidebar if sidebar else st
-    band, coefficients = strategies.gwr_profile(district.district_id)
-    target.subheader(i18n.t("gwr.header", lang))
-    target.caption(i18n.t("gwr.description", lang))
-    target.caption(i18n.t("gwr.band", lang, minutes=band))
-    target.dataframe(
-        pd.DataFrame(
-            {
-                i18n.t("results.dimension", lang): list(i18n.dimension_labels(lang)),
-                i18n.t("gwr.coefficient", lang): [
-                    coefficients[key]
-                    for key in ("mob", "cult", "tour", "socio")
-                ],
-            }
-        ),
-        hide_index=True,
-        width="stretch",
-    )
 
 
 def render_budget_controls(district: District, lang: str) -> None:
@@ -395,13 +369,20 @@ def render_map(district: District, lang: str) -> None:
     st.map(pd.DataFrame(points, columns=["lon", "lat"]), zoom=12)
 
 
-def render_selection_map(catalog: DistrictCatalog, lang: str) -> None:
+def render_selection_map(
+    catalog: DistrictCatalog, lang: str, *, selected_district_id: str | None = None
+) -> None:
     """Show the generated CArME zone map alongside the district picker."""
-    st.subheader(i18n.t("map.overview_header", lang))
+    st.subheader(i18n.t("map.header", lang))
     if not any(d.geometry for d in catalog.districts):
         st.caption(i18n.t("map.overview_unavailable", lang))
         return
-    st.plotly_chart(charts.build_selection_map(catalog.districts), width="stretch")
+    st.plotly_chart(
+        charts.build_selection_map(
+            catalog.districts, selected_district_id=selected_district_id
+        ),
+        width="stretch",
+    )
 
 
 def _boundary_points(geometry: dict) -> list[tuple[float, float]]:

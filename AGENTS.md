@@ -2,20 +2,16 @@
 
 ## CArME data workflow
 
-- Source CSV: `src/riabita/data/carme_indicators.csv`.
-- Real geometry source: `docs/zone_carme/zone_carme.shp` and companion shapefile files.
-- Generated GeoJSON: `src/riabita/data/carme_zones.geojson`.
-- Regenerate the map with:
-  `PYTHONPATH=src .venv/bin/python -m riabita.data.convert_csv_to_geojson src/riabita/data/carme_indicators.csv src/riabita/data/carme_zones.geojson --shapefile docs/zone_carme/zone_carme.shp`
-- The converter entry point is `generate_carme_geojson()` in `src/riabita/data/convert_csv_to_geojson.py`.
-- The converter preserves the source columns, adds `M0`, `C0`, `T0`, `S0`, `baseline_source`, and centroid fields, and emits 35 WGS84 features.
-- Real zone polygons are taken from the shapefile when available; missing composite/study zones keep the CSV-derived fallback geometry. The shapefile CRS is reprojected to `EPSG:4326` before writing the output.
-- The CSV provides `Mean_RIz`, not simulator dimension baselines. Treat the generated `modeled_proxy` values as transparent estimates, not official research measurements.
+- Runtime source: `src/riabita/data/zona_carme_riabita/zone_carme_riabita.shp` and its `.dbf`, `.shx`, `.prj`, and `.cpg` sidecars.
+- The DBF embeds zone IDs, names, `MO`, `CO`, `TO`, `SO`, `RI_z`, and `Classe`. Map the four dimensions to `(M, C, T, S)` and multiply normalized values by 100.
+- A0 has missing dimension values and is skipped with a warning. The source provides 26 playable districts.
+- GeoPandas reads and reprojects the shapefile to `EPSG:4326` in memory. Do not read GeoJSON, join a CSV, or create proxy values.
+- `RIABITA_DISTRICTS_PATH` overrides the bundled shapefile path and must point to a shapefile. Invalid sources raise `DataSourceError`; there is no demo fallback.
 
 ## Application integration
 
-- `config.get_settings()` uses the generated GeoJSON by default when it exists. `RIABITA_DISTRICTS_PATH` always overrides it.
-- `data.loader.load_districts()` is the only GeoJSON reader and retains validation, caching, CRS handling, and demo fallback.
+- `config.get_settings()` uses the bundled shapefile by default. `RIABITA_DISTRICTS_PATH` overrides it.
+- `data.loader.load_districts()` is the only district reader and validates embedded fields, scales values, handles CRS, and reports omitted records.
 - `ui.charts.build_selection_map()` creates the Plotly overview figure; `ui.views.render_selection_map()` displays it.
 - The overview map is exploratory. The existing district selectbox remains the authoritative selection control because polygon-click state integration is not implemented.
 - Preserve the `(M, C, T, S)` order and keep CArME parsing outside the simulation engine.
@@ -40,8 +36,8 @@
 
 ## Validation
 
-- Focused tests: `PYTHONPATH=src .venv/bin/python -m pytest tests/test_converter.py tests/test_loader.py -q -p no:cacheprovider`
+- Focused tests: `PYTHONPATH=src .venv/bin/python -m pytest tests/test_loader.py tests/test_app.py tests/test_i18n.py -q -p no:cacheprovider`
 - Full suite: `PYTHONPATH=src .venv/bin/python -m pytest -q -p no:cacheprovider`
-- Keep generated caches, local databases, credentials, and override GeoJSON files out of source control.
+- Keep generated caches, local databases, and credentials out of source control.
 - For GWR changes, also run `tests/test_events_and_strategies.py`, `tests/test_app.py`,
   and `tests/test_i18n.py`; verify `A10 → 10` and `C6 → 30` minute profiles.

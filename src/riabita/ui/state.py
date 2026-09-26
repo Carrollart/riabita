@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Callable
 
 import numpy as np
@@ -82,22 +83,26 @@ class Round:
         return len(self.turns)
 
 
-@st.cache_data(show_spinner=False)
-def _cached_districts(path: str | None, cache_token: float) -> DistrictCatalog:
+@st.cache_data(show_spinner=False, max_entries=8)
+def _cached_districts(
+    path: str | None, cache_token: tuple[tuple[str, int, int], ...]
+) -> DistrictCatalog:
     return load_districts(path)
 
 
 def load_catalog(path: str | None) -> DistrictCatalog:
-    """Load districts once per source, refreshing when the file changes."""
-    token = 0.0
+    """Load districts once per source, refreshing when a shapefile part changes."""
+    token: list[tuple[str, int, int]] = []
     if path:
-        try:
-            import os
-
-            token = os.path.getmtime(path)
-        except OSError:
-            token = 0.0
-    return _cached_districts(path, token)
+        source = Path(path)
+        for suffix in (".shp", ".shx", ".dbf", ".prj", ".cpg"):
+            sidecar = source.with_suffix(suffix)
+            try:
+                stat = sidecar.stat()
+                token.append((suffix, stat.st_mtime_ns, stat.st_size))
+            except OSError:
+                token.append((suffix, -1, -1))
+    return _cached_districts(path, tuple(token))
 
 
 def init_state(default_language: str) -> None:

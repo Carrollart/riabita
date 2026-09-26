@@ -36,10 +36,10 @@ Priority: **MVP** requirements must all ship for the app to be considered comple
 |---|---|---|
 | REQ-010 | The player selects one Rome district before allocating. | MVP |
 | REQ-011 | Selecting a district displays its baseline `M0`, `C0`, `T0`, `S0` values and its initial RIz. | MVP |
-| REQ-012 | District data loads from an external GeoJSON path when one is configured. | MVP |
-| REQ-012a | GeoJSON parsing uses the standard library. GeoPandas is an optional extra, imported only to reproject a file that declares a coordinate system other than EPSG:4326. | MVP |
-| REQ-013 | When no path is configured, or the configured file is missing, unreadable, or fails schema validation, the app loads a bundled demo dataset and shows a clearly worded non-blocking notice that demo data is in use. | MVP |
-| REQ-014 | The app labels demo indicator values and demo geometries as illustrative, not authoritative research data. | MVP |
+| REQ-012 | District data loads directly from the bundled CArME shapefile, or from another shapefile configured with `RIABITA_DISTRICTS_PATH`. | MVP |
+| REQ-012a | GeoPandas is a standard dependency. The loader reads embedded `MO`, `CO`, `TO`, and `SO` indicators and reprojects geometry to EPSG:4326. | MVP |
+| REQ-013 | Missing, unreadable, or invalid shapefile data produces a localized source error. The app does not load substitute GeoJSON or demo data. | MVP |
+| REQ-014 | Records with missing or invalid embedded dimensions are skipped with a localized warning; their values are never synthesized. | MVP |
 | REQ-015 | The app renders a map highlighting the selected district when usable geometry exists. When geometry is absent or invalid, the app hides the map and explains why, without breaking the round. | MVP |
 | REQ-016 | Loading district data is cached so that re-rendering does not re-read the file on every interaction. | MVP |
 

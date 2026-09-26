@@ -23,11 +23,8 @@ src/
     ├── events.py                Event catalog and draw
     ├── strategies.py            AI and random benchmark allocations
     ├── data/
-    │   ├── loader.py            GeoJSON loading, validation, demo fallback
-      │   ├── convert_csv_to_geojson.py  CArME CSV conversion CLI
-      │   ├── carme_indicators.csv       CArME tabular source
-      │   ├── carme_zones.geojson        generated CArME map
-      │   └── demo_districts.geojson
+    │   ├── loader.py            Shapefile loading, validation, CRS conversion
+    │   └── zona_carme_riabita/  Bundled CArME shapefile and sidecars
     ├── leaderboard/
     │   ├── models.py            SQLAlchemy ORM mapping
     │   ├── repository.py        Repository protocol and implementations
@@ -66,10 +63,9 @@ Enforced rules:
 
 - `domain/` and `engine/` import only the standard library, `numpy`, and `config`.
   They must not import Streamlit, GeoPandas, Plotly, or SQLAlchemy (REQ-038).
-- `data/loader.py` is the runtime GeoJSON reader. The offline CArME converter
-  reads the CSV and writes GeoJSON; it is not called by Streamlit reruns.
-  Runtime GeoJSON parsing uses the standard library and imports GeoPandas only
-  to reproject a non-EPSG:4326 file, so the optional `geo` extra stays optional.
+- `data/loader.py` is the runtime shapefile reader. GeoPandas is a standard
+  runtime dependency because the application reads and reprojects the bundled
+  CArME shapefile directly.
 - `leaderboard/repository.py` is the only module that issues queries (REQ-068).
 - `ui/` is the only module that calls Streamlit.
 - `main.py` wires modules together and contains no game logic.
@@ -86,7 +82,7 @@ Define these in `domain/models.py` as frozen dataclasses with type annotations
 |---|---|
 | `Dimensions` | `mobility: float`, `culture: float`, `tourism: float`, `socio: float` |
 | `Allocation` | `mobility: int`, `culture: int`, `tourism: int`, `socio: int`; represents one turn or a cumulative allocation |
-| `District` | `district_id: str`, `name: str`, `baseline: Dimensions`, `geometry: object \| None`, `is_demo: bool` |
+| `District` | `district_id: str`, `name: str`, `baseline: Dimensions`, `geometry: object \| None` |
 | `Event` | `event_id: str`, `name_key: str`, `description_key: str`, `impact: Dimensions` |
 | `Modifier` | `modifier_id: str`, `points: float`, `reason_key: str`, `detail: dict[str, float]` |
 | `SimulationResult` | see below |
@@ -168,7 +164,7 @@ secrets. Never commit values or log them (REQ-069).
 | Variable | Purpose | Default |
 |---|---|---|
 | `RIABITA_DATABASE_URL` | SQLAlchemy URL for SQLite or PostgreSQL | project-local `.data/riabita.sqlite3` |
-| `RIABITA_DISTRICTS_PATH` | District GeoJSON override | generated CArME GeoJSON when present; otherwise demo data |
+| `RIABITA_DISTRICTS_PATH` | District shapefile override | bundled CArME shapefile |
 | `RIABITA_DEFAULT_LANGUAGE` | `it`, `en`, or `fr` | `it` |
 | `RIABITA_LEADERBOARD_LIMIT` | Rows displayed | `10` |
 
@@ -177,7 +173,7 @@ Expose a single `get_settings()` returning a frozen settings object. When
 the leaderboard. A configured SQLite or PostgreSQL URL always takes precedence.
 If the selected database is unreachable, results still render (REQ-071).
 
-Add `.env`, `*.geojson` overrides, and any local database file to `.gitignore`.
+Add `.env`, local district overrides, and any local database file to `.gitignore`.
 
 ## Leaderboard persistence
 
@@ -231,8 +227,8 @@ Define a small exception hierarchy in `domain/`:
 
 - `RiabitaError` — base.
 - `ValidationError` — carries failed rule identifiers.
-- `DataSourceError` — raised by the loader, caught by the UI, triggers the demo
-  fallback notice.
+- `DataSourceError` — raised by the loader and caught by the UI, which displays a
+  localized source error without loading substitute districts.
 - `LeaderboardUnavailable` — raised by the service, caught by the UI, degrades the
   leaderboard panel only.
 

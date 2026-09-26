@@ -4,70 +4,25 @@ Geospatial loading, localization, layout, charts, and accessibility.
 
 ## District data
 
-### CArME source and generated map
+### CArME shapefile source
 
-The CArME table is `src/riabita/data/carme_indicators.csv`. Generate
-`src/riabita/data/carme_zones.geojson` with:
+Load `src/riabita/data/zona_carme_riabita/zone_carme_riabita.shp` directly with
+GeoPandas. Keep the `.dbf`, `.shx`, `.prj`, and `.cpg` sidecars alongside it.
+The DBF contains `zc_code`, `nome`, `MO`, `CO`, `TO`, `SO`, `RI_z`, and `Classe`.
+The simulator uses `zc_code` as `district_id`, `nome` as the display name, and
+`MO/CO/TO/SO` as `(M, C, T, S)`. Dimension fields are normalized `0..1` values;
+multiply them by 100 before constructing `Dimensions`. `RI_z` and `Classe` do
+not replace the simulator's scoring rules.
 
-```text
-PYTHONPATH=src .venv/bin/python -m riabita.data.convert_csv_to_geojson src/riabita/data/carme_indicators.csv src/riabita/data/carme_zones.geojson
-```
+The source has 27 records. A0 has no valid dimensions and is skipped, leaving 26
+playable districts. Reproject geometry to `EPSG:4326` in memory. Missing or
+invalid records are reported as localized warnings. A missing, unreadable, or
+unusable shapefile raises `DataSourceError`; there is no GeoJSON or demo fallback.
+`RIABITA_DISTRICTS_PATH` overrides the bundled source with another shapefile.
 
-The converter emits 35 WGS84 Polygon features, preserves the source indicators,
-and adds `M0`, `C0`, `T0`, `S0`, `nome`, centroid coordinates, and
-`baseline_source`. Because the table contains `Mean_RIz` rather than the four
-dimension baselines, generated dimensions are modeled proxy estimates. Keep
-that caveat visible in research and product documentation.
-
-The Velabro anchor is latitude `41.889`, longitude `12.482`. Bearings, walking
-distances, and polygon radii follow the supplied spatial-modeling brief. Each
-generated octagon is a visualization approximation, not an authoritative
-cadastral boundary.
-
-### Schema
-
-Each GeoJSON feature must carry these properties:
-
-| Property | Type | Constraint |
-|---|---|---|
-| `nome` | string | Non-empty, unique across features |
-| `M0`, `C0`, `T0`, `S0` | number | `0..100` inclusive |
-
-Geometry must be `Polygon` or `MultiPolygon`, or `null`. A feature `id` is optional;
-derive a stable `district_id` by slugifying `nome` when `id` is absent.
-
-### Loading order
-
-1. If `RIABITA_DISTRICTS_PATH` is set, read that file.
-2. Otherwise, use the generated CArME GeoJSON when it exists.
-3. Validate the schema. Drop individual features that fail validation and record why.
-4. If the selected path is unset, unreadable, malformed, or yields zero valid features, load
-   the bundled `data/demo_districts.geojson` and mark every district `is_demo=True`
-   (REQ-013).
-
-Never raise out of the loader to the top level. Convert failures into a
-`DataSourceError` the UI catches, and always end with a usable district list. An
-unreadable custom file degrades to demo data; it never produces an empty app.
-
-### Demo dataset
-
-Seed `data/demo_districts.geojson` from the district table in
-the original research document (Centro, San Lorenzo, Trastevere, Montesacro,
-Trieste-Parioli, EUR, Ostia, Tuscolano, Magliana, Nomentano) with their documented
-`M0`, `C0`, `T0`, `S0` values and simplified polygons.
-
-Those polygons are rough rectangles and the indicators are illustrative. Label them
-in the UI as demo data, not research output (REQ-014). Do not present them as the
-university RIz dataset.
-
-### Geometry handling
-
-- Assume and enforce `EPSG:4326`. Reproject when the source declares another CRS.
-- Treat missing, empty, or invalid geometry as "no map available" for that district.
-  Values still work; only the map hides (REQ-015).
-- Cache the parsed result with `st.cache_data` keyed on the resolved path and its
-  modification time (REQ-016). Do not cache the raw GeoDataFrame across a path change.
-- GeoPandas is imported only inside the loader, so the rest of the app runs without it.
+Cache the parsed catalog with `st.cache_data` using the resolved path and the
+modification time and size of the `.shp`, `.shx`, `.dbf`, `.prj`, and `.cpg`
+files. Do not cache a raw GeoDataFrame across a path change.
 
 ## Localization
 
@@ -96,7 +51,7 @@ Key naming uses `area.element`, for example `sidebar.budget_total`,
 **Sidebar**
 
 1. Language selector.
-2. District selector, showing the demo-data notice when applicable.
+2. District selector, showing localized warnings for skipped shapefile records.
 3. Baseline values and initial RIz for the selected district.
 4. Four budget sliders in `(M, C, T, S)` order, integer step 1, range `0..100`.
 5. Cumulative invested total, current turn total, and remaining credits, updating

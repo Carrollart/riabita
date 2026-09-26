@@ -19,21 +19,15 @@
 
 ## CArME data integration
 
-- Use `src/riabita/data/carme_indicators.csv` as the CArME source and
-	`src/riabita/data/carme_zones.geojson` as generated spatial output.
-- Regenerate the map with `riabita.data.convert_csv_to_geojson` after changing
-	the CSV; do not hand-edit the generated GeoJSON.
-- The converter preserves source indicators and emits 35 WGS84 Polygon features
-	with `M0`, `C0`, `T0`, `S0`, centroid fields, and `baseline_source`.
-- The source contains aggregate `Mean_RIz`, not the four simulator baselines.
-	Generated dimensions are transparent `modeled_proxy` estimates, not official
-	research measurements.
-- Velabro-centered bearing/distance polygons are heuristic visualizations, not
-	cadastral boundaries. Keep coordinates in `[longitude, latitude]` order and
-	close every polygon ring.
-- `config.get_settings()` uses the generated map by default,
-	`RIABITA_DISTRICTS_PATH` overrides it, and `load_districts()` retains demo
-	fallback behavior. Keep CArME parsing outside the simulation engine.
+- Read `src/riabita/data/zona_carme_riabita/zone_carme_riabita.shp` directly with
+	GeoPandas; keep the `.dbf`, `.shx`, `.prj`, and `.cpg` sidecars.
+- The DBF embeds `zc_code`, `nome`, and normalized `MO`, `CO`, `TO`, `SO` values.
+	Map them to `(M, C, T, S)`, scale by 100, and reproject geometry to EPSG:4326.
+- Skip records with missing or invalid indicators. A0 is incomplete, so the
+	default catalog contains 26 districts and reports the omission.
+- `RIABITA_DISTRICTS_PATH` overrides the default with another shapefile.
+	Invalid sources raise `DataSourceError`; do not load GeoJSON or demo fallback.
+- Keep CArME parsing in the data layer, outside the simulation engine.
 
 ## GWR planner integration
 

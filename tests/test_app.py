@@ -82,11 +82,20 @@ def test_comparison_can_include_the_best_saved_player_score() -> None:
 
 
 def test_selection_map_contains_loaded_district_geometries() -> None:
-    catalog = state.load_catalog(str(config.DEFAULT_CARME_GEOJSON_PATH))
+    catalog = state.load_catalog(str(config.DEFAULT_DISTRICTS_PATH))
     figure = charts.build_selection_map(catalog.districts)
 
     assert len(figure.data) == 1
-    assert len(figure.data[0].locations) == 35
+    assert len(figure.data[0].locations) == 26
+
+
+def test_selection_map_highlights_the_selected_district() -> None:
+    catalog = state.load_catalog(str(config.DEFAULT_DISTRICTS_PATH))
+    figure = charts.build_selection_map(catalog.districts, selected_district_id="C6")
+
+    assert len(figure.data) == 2
+    assert list(figure.data[1].locations) == ["C6"]
+    assert figure.data[1].marker.line.width == 4
 
 
 def test_charts_do_not_import_streamlit() -> None:
@@ -123,7 +132,7 @@ def commit_turn(app: AppTest) -> AppTest:
     return app
 
 
-def test_app_starts_with_demo_data_and_local_database() -> None:
+def test_app_starts_with_shapefile_data_and_local_database() -> None:
     app = run_app()
     assert not app.exception
     assert app.title[0].value == "RIABITA ROMA"
@@ -140,47 +149,18 @@ def test_direct_entry_point_explains_streamlit_command() -> None:
     assert ".venv/bin/python -m streamlit run src/main.py" in result.stdout
 
 
-def test_generated_carme_data_is_used_by_default() -> None:
+def test_embedded_carme_data_is_used_by_default(capsys) -> None:
     app = run_app()
-    assert not any(i18n.t("data.demo_notice", "it") in info.value for info in app.info)
-    assert len(district_selectbox(app).options) == 35
+    assert len(district_selectbox(app).options) == 26
+    assert not app.sidebar.warning
+    assert i18n.t("data.district_skipped", "it", district="A0") in capsys.readouterr().out
 
 
-def _gwr_tables(dataframes):
-    return [
-        dataframe.value
-        for dataframe in dataframes
-        if i18n.t("gwr.coefficient", "it") in dataframe.value.columns
-    ]
-
-
-def test_active_gwr_profile_is_displayed_for_selected_district() -> None:
+def test_invalid_district_source_shows_localized_error(monkeypatch) -> None:
+    monkeypatch.setenv("RIABITA_DISTRICTS_PATH", "missing-districts.shp")
     app = run_app()
-    tables = _gwr_tables(app.dataframe)
 
-    assert len(tables) == 2
-    assert list(tables[0].iloc[:, 1]) == pytest.approx([0.41, 0.32, 0.27, -0.05])
-
-
-def test_active_gwr_profile_updates_when_district_changes() -> None:
-    app = run_app()
-    catalog = state.load_catalog(str(config.DEFAULT_CARME_GEOJSON_PATH))
-    ostiense = catalog.get("C6")
-    assert ostiense is not None
-
-    district_selectbox(app).set_value(ostiense.name).run()
-    tables = _gwr_tables(app.dataframe)
-
-    assert len(tables) == 2
-    assert list(tables[0].iloc[:, 1]) == pytest.approx([-0.07, 0.02, -0.05, 0.38])
-
-
-def test_active_gwr_profile_remains_after_a_turn() -> None:
-    app = run_app()
-    set_turn_allocation(app, (20, 0, 0, 0))
-    commit_turn(app)
-
-    assert len(_gwr_tables(app.dataframe)) == 2
+    assert any(i18n.t("data.source_error", "it") == error.value for error in app.error)
 
 
 def test_turn_is_disabled_until_at_least_one_credit_is_allocated() -> None:

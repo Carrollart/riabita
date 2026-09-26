@@ -130,8 +130,13 @@ DEFAULT_DATABASE_PATH: Final[Path] = PROJECT_ROOT / ".data" / "riabita.sqlite3"
 DEFAULT_DATABASE_URL: Final[str] = (
     f"sqlite+pysqlite:///{DEFAULT_DATABASE_PATH.as_posix()}"
 )
-DEFAULT_CARME_GEOJSON_PATH: Final[Path] = (
-    PROJECT_ROOT / "src" / "riabita" / "data" / "carme_zones.geojson"
+DEFAULT_DISTRICTS_PATH: Final[Path] = (
+    PROJECT_ROOT
+    / "src"
+    / "riabita"
+    / "data"
+    / "zona_carme_riabita"
+    / "zone_carme_riabita.shp"
 )
 
 
@@ -175,9 +180,7 @@ def get_settings() -> Settings:
 
     language = _resolve("RIABITA_DEFAULT_LANGUAGE") or DEFAULT_LANGUAGE
 
-    districts_path = _resolve("RIABITA_DISTRICTS_PATH")
-    if districts_path is None and DEFAULT_CARME_GEOJSON_PATH.is_file():
-        districts_path = str(DEFAULT_CARME_GEOJSON_PATH)
+    districts_path = _resolve("RIABITA_DISTRICTS_PATH") or str(DEFAULT_DISTRICTS_PATH)
 
     return Settings(
         database_url=_resolve("RIABITA_DATABASE_URL") or DEFAULT_DATABASE_URL,

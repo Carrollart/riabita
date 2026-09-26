@@ -91,7 +91,6 @@ class District:
     name: str
     baseline: Dimensions
     geometry: Any | None = None
-    is_demo: bool = False
 
 
 @dataclass(frozen=True)

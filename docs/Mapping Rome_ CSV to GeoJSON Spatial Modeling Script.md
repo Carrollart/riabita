@@ -1,3 +1,5 @@
+> Historical workflow note: the CSV-to-GeoJSON converter described below is retired and is not used by the app. The runtime reads `src/riabita/data/zona_carme_riabita/zone_carme_riabita.shp` directly and uses its embedded `MO`, `CO`, `TO`, and `SO` fields. A0 has missing dimensions and is omitted. See [README.md](../README.md) for the current data contract.
+
 I have created a robust Python helper script called convert\_csv\_to\_geojson.py to automatically transform the tabular carme\_indicators.csv dataset into a spatially complete, interactive carme\_zones.geojson map file.  
 Below is a detailed breakdown of the mathematical heuristics used to model the geography of Rome's historic center, the complete python source code, and how to integrate it with your interactive Streamlit dashboard.
 
