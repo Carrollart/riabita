@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import builtins
 import subprocess
 import sys
 from pathlib import Path
@@ -10,7 +11,9 @@ import pytest
 from streamlit.testing.v1 import AppTest
 
 from riabita import config, i18n
-from riabita.domain.models import Allocation
+from riabita.data import loader
+from riabita.domain.errors import DataSourceError
+from riabita.domain.models import Allocation, Dimensions, District
 from riabita.ui import charts, state
 
 APP = str(Path(__file__).resolve().parents[1] / "src" / "main.py")
@@ -96,6 +99,26 @@ def test_selection_map_contains_loaded_district_geometries() -> None:
     assert len(figure.data[0].locations) == 26
 
 
+def test_selection_map_uses_plotly_maplibre_api() -> None:
+    district = District(
+        district_id="C6",
+        name="Test district",
+        baseline=Dimensions(50, 60, 70, 80),
+        geometry={
+            "type": "Polygon",
+            "coordinates": [[[0, 0], [1, 0], [1, 1], [0, 0]]],
+        },
+    )
+    figure = charts.build_selection_map([district], selected_district_id="C6")
+
+    assert [trace.type for trace in figure.data] == [
+        "choroplethmap",
+        "choroplethmap",
+    ]
+    assert list(figure.data[1].locations) == ["C6"]
+    assert figure.layout.map.style == "carto-positron"
+
+
 def test_selection_map_highlights_the_selected_district() -> None:
     catalog = state.load_catalog(str(config.DEFAULT_DISTRICTS_PATH))
     figure = charts.build_selection_map(catalog.districts, selected_district_id="C6")
@@ -168,6 +191,20 @@ def test_invalid_district_source_shows_localized_error(monkeypatch) -> None:
     app = run_app()
 
     assert any(i18n.t("data.source_error", "it") == error.value for error in app.error)
+    assert any(code.value for code in app.code)
+
+
+def test_geopandas_import_error_is_preserved(monkeypatch) -> None:
+    original_import = builtins.__import__
+
+    def fail_geopandas(name, *args, **kwargs):
+        if name == "geopandas":
+            raise ImportError("DLL load failed while importing _gdal")
+        return original_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", fail_geopandas)
+    with pytest.raises(DataSourceError, match="DLL load failed while importing _gdal"):
+        loader.load_districts("districts.shp")
 
 
 def test_turn_is_disabled_until_at_least_one_credit_is_allocated() -> None:

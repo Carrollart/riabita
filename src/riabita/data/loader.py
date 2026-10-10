@@ -45,7 +45,7 @@ def load_districts(path: str | Path | None = None) -> DistrictCatalog:
         import geopandas as gpd
     except ImportError as error:
         raise DataSourceError(
-            "GeoPandas is required to read district shapefiles"
+            f"GeoPandas could not be imported: {error}"
         ) from error
 
     try:

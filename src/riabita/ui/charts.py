@@ -105,7 +105,7 @@ def build_comparison(scores: Mapping[str, float]) -> go.Figure:
 def build_selection_map(
     districts: Sequence[District], selected_district_id: str | None = None
 ) -> go.Figure:
-    """Build a token-free Mapbox choropleth for the available districts."""
+    """Build a token-free MapLibre choropleth for the available districts."""
     features = []
     locations = []
     values = []
@@ -125,7 +125,7 @@ def build_selection_map(
 
     geojson = {"type": "FeatureCollection", "features": features}
     figure = go.Figure(
-        go.Choroplethmapbox(
+        go.Choroplethmap(
             geojson=geojson,
             locations=locations,
             z=values,
@@ -142,7 +142,7 @@ def build_selection_map(
             feature for feature in features if feature["id"] == selected_district_id
         )
         figure.add_trace(
-            go.Choroplethmapbox(
+            go.Choroplethmap(
                 geojson={
                     "type": "FeatureCollection",
                     "features": [selected_feature],
@@ -161,7 +161,7 @@ def build_selection_map(
             )
         )
     figure.update_layout(
-        mapbox=dict(
+        map=dict(
             style="carto-positron",
             center={"lat": 41.889, "lon": 12.482},
             zoom=12.5,

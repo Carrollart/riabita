@@ -47,8 +47,10 @@ def main() -> None:
 
     try:
         catalog = state.load_catalog(settings.districts_path)
-    except DataSourceError:
+    except DataSourceError as error:
         st.error(i18n.t("data.source_error", lang))
+        with st.expander(i18n.t("data.source_error_details", lang)):
+            st.code(str(error))
         return
     for district_id in catalog.warnings:
         print(i18n.t("data.district_skipped", lang, district=district_id))
